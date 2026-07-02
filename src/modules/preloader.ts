@@ -22,8 +22,14 @@ export function runPreloader(): Promise<void> {
   const progress = document.getElementById('preloader-progress');
   const barsWrap = document.getElementById('preloader-bars');
 
-  const seen = sessionStorage.getItem('arnibyte-boot') === '1';
-  sessionStorage.setItem('arnibyte-boot', '1');
+  let seen = false;
+  try {
+    // sandboxed iframes / private mode can deny storage — boot long in that case
+    seen = sessionStorage.getItem('arnibyte-boot') === '1';
+    sessionStorage.setItem('arnibyte-boot', '1');
+  } catch {
+    /* no storage access */
+  }
 
   if (REDUCED_MOTION) {
     el.remove();
