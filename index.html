@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ARNIBYTE® — Digital Portfolio</title>
+    <meta
+      name="description"
+      content="ARNIBYTE — digital designer & creative developer. Interfaces built like instruments: precise, minimal, alive."
+    />
+    <meta property="og:title" content="ARNIBYTE® — Digital Portfolio" />
+    <meta
+      property="og:description"
+      content="Interfaces built like instruments: precise, minimal, alive."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <noscript>
+      <style>
+        .preloader, .cursor, .grain, .works__preview { display: none !important; }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <a class="skip-link" href="#works">SKIP TO WORKS</a>
+
+    <!-- BOOT / preloader -->
+    <div class="preloader" id="preloader" aria-hidden="true">
+      <div class="preloader__bars" id="preloader-bars"></div>
+      <div class="preloader__center">
+        <div class="preloader__count mono" id="preloader-count">000</div>
+        <div class="preloader__label mono">
+          <span>ARNIBYTE® / PORTFOLIO</span>
+          <span id="preloader-status">INITIALIZING</span>
+        </div>
+        <div class="preloader__track">
+          <div class="preloader__progress" id="preloader-progress"></div>
+        </div>
+      </div>
+      <div class="preloader__foot mono">
+        <span>PIECE №01</span>
+        <span>EST. 2026</span>
+      </div>
+    </div>
+
+    <!-- HUD : fixed frame -->
+    <header class="hud" id="hud">
+      <div class="hud__row">
+        <a class="hud__brand mono" href="#top" data-scramble>ARNIBYTE®</a>
+        <nav class="hud__nav mono" aria-label="Primary">
+          <a href="#about"><sup>01</sup><span data-scramble>ABOUT</span></a>
+          <a href="#works"><sup>02</sup><span data-scramble>WORKS</span></a>
+          <a href="#capabilities"><sup>03</sup><span data-scramble>SKILLS</span></a>
+          <a href="#contact"><sup>04</sup><span data-scramble>CONTACT</span></a>
+        </nav>
+        <div class="hud__meta mono">
+          <span class="hud__status"><i class="dot" aria-hidden="true"></i>OPEN FOR WORK</span>
+          <span class="hud__clock" id="hud-clock" aria-label="Local time">00:00:00</span>
+        </div>
+        <button class="hud__menu-btn mono" id="menu-btn" aria-expanded="false" aria-controls="menu">
+          MENU
+        </button>
+      </div>
+      <div class="scroll-progress" aria-hidden="true">
+        <div class="scroll-progress__bar" id="scroll-progress"></div>
+      </div>
+    </header>
+
+    <!-- fullscreen menu -->
+    <div class="menu" id="menu" aria-hidden="true">
+      <div class="menu__inner">
+        <nav class="menu__nav" aria-label="Menu">
+          <a href="#top" class="menu__link"><span class="mono menu__num">00</span><span class="menu__word">INDEX</span></a>
+          <a href="#about" class="menu__link"><span class="mono menu__num">01</span><span class="menu__word">ABOUT</span></a>
+          <a href="#works" class="menu__link"><span class="mono menu__num">02</span><span class="menu__word">WORKS</span></a>
+          <a href="#capabilities" class="menu__link"><span class="mono menu__num">03</span><span class="menu__word">SKILLS</span></a>
+          <a href="#contact" class="menu__link"><span class="mono menu__num">04</span><span class="menu__word">CONTACT</span></a>
+        </nav>
+        <div class="menu__foot mono">
+          <span>HELLO@ARNIBYTE.WORK</span>
+          <span class="serif-accent">press esc to close</span>
+        </div>
+      </div>
+    </div>
+
+    <main id="main">
+      <!-- 01 / HERO -->
+      <section class="hero" id="top" aria-label="Intro">
+        <canvas class="hero__dither" id="dither" aria-hidden="true"></canvas>
+        <div class="hero__corners mono" aria-hidden="true">
+          <span class="corner corner--tl">FOLIO / VOL.01</span>
+          <span class="corner corner--tr" id="hero-coords">48°08′N 11°34′E</span>
+          <span class="corner corner--bl">SCROLL TO EXPLORE ↓</span>
+          <span class="corner corner--br">v1.0 — MMXXVI</span>
+        </div>
+        <div class="hero__stack">
+          <p class="hero__over mono" id="hero-over">DIGITAL DESIGNER — CREATIVE DEVELOPER</p>
+          <h1 class="hero__title">
+            <span class="hero__line"><span class="hero__word">ARNI</span></span>
+            <span class="hero__line"><span class="hero__word hero__word--outline">BYTE</span></span>
+          </h1>
+          <span class="hero__accent serif-accent" aria-hidden="true">portfolio*</span>
+          <p class="hero__under mono">
+            <span>( WORKS 2023 — 2026 )</span>
+            <span>*AS A PIECE OF ART</span>
+          </p>
+        </div>
+        <div class="ticker mono" aria-hidden="true">
+          <div class="ticker__inner" id="hero-ticker"></div>
+        </div>
+      </section>
+
+      <!-- 02 / ABOUT -->
+      <section class="about section" id="about" aria-label="About">
+        <header class="section__head mono">
+          <span class="section__num">01</span>
+          <span class="section__name" data-scramble>ABOUT / MANIFESTO</span>
+          <span class="section__rule" aria-hidden="true"></span>
+        </header>
+        <div class="about__grid">
+          <p class="manifesto" id="manifesto">
+            I build digital spaces that behave like
+            <em class="serif-accent">instruments</em> — precise, minimal,
+            alive. Every pixel is negotiated. Nothing decorative survives.
+            What remains is <em class="serif-accent">signal</em>.
+          </p>
+          <div class="about__side">
+            <figure class="portrait">
+              <canvas id="portrait" width="480" height="600" aria-label="Portrait placeholder — halftone pattern"></canvas>
+              <figcaption class="mono">FIG.01 — PORTRAIT / PENDING UPLOAD</figcaption>
+            </figure>
+            <dl class="meta-list mono">
+              <div><dt>LOCATION</dt><dd id="meta-location">PLANET EARTH</dd></div>
+              <div><dt>FOCUS</dt><dd>DESIGN × CODE × ART</dd></div>
+              <div><dt>STATUS</dt><dd class="accent">AVAILABLE / 2026</dd></div>
+              <div><dt>RESPONSE</dt><dd>&lt; 24 HOURS</dd></div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__inner" data-marquee>
+          <span>SELECTED WORKS — SELECTED WORKS — SELECTED WORKS — SELECTED WORKS — </span>
+        </div>
+      </div>
+
+      <!-- 03 / WORKS -->
+      <section class="works section" id="works" aria-label="Selected works">
+        <header class="section__head mono">
+          <span class="section__num">02</span>
+          <span class="section__name" data-scramble>SELECTED WORKS</span>
+          <span class="section__rule" aria-hidden="true"></span>
+        </header>
+        <ol class="works__list" id="works-list"></ol>
+        <p class="works__note mono">( HOVER TO PREVIEW — CLICK TO OPEN )</p>
+        <div class="works__preview" id="works-preview" aria-hidden="true">
+          <canvas id="works-preview-canvas" width="420" height="300"></canvas>
+          <span class="works__preview-tag mono" id="works-preview-tag"></span>
+        </div>
+      </section>
+
+      <!-- 04 / CAPABILITIES -->
+      <section class="caps section" id="capabilities" aria-label="Capabilities">
+        <header class="section__head mono">
+          <span class="section__num">03</span>
+          <span class="section__name" data-scramble>CAPABILITIES</span>
+          <span class="section__rule" aria-hidden="true"></span>
+        </header>
+        <ul class="caps__grid" id="caps-grid"></ul>
+      </section>
+
+      <div class="marquee marquee--invert" aria-hidden="true">
+        <div class="marquee__inner" data-marquee data-marquee-reverse>
+          <span>DESIGN — DEVELOPMENT — ART DIRECTION — MOTION — DESIGN — DEVELOPMENT — ART DIRECTION — MOTION — </span>
+        </div>
+      </div>
+
+      <!-- 05 / CONTACT -->
+      <section class="contact section" id="contact" aria-label="Contact">
+        <header class="section__head mono">
+          <span class="section__num">04</span>
+          <span class="section__name" data-scramble>CONTACT</span>
+          <span class="section__rule" aria-hidden="true"></span>
+        </header>
+        <p class="contact__lead mono">HAVE A PROJECT IN MIND?</p>
+        <a class="contact__cta" href="mailto:hello@arnibyte.work" id="contact-cta">
+          <span class="contact__cta-line"><span>LET'S</span></span>
+          <span class="contact__cta-line"><span>TALK<i class="accent">.</i></span></span>
+        </a>
+        <div class="contact__row">
+          <a class="contact__mail mono" href="mailto:hello@arnibyte.work" data-scramble>HELLO@ARNIBYTE.WORK</a>
+          <ul class="contact__socials mono">
+            <li><a href="#" data-scramble>INSTAGRAM ↗</a></li>
+            <li><a href="#" data-scramble>BEHANCE ↗</a></li>
+            <li><a href="#" data-scramble>GITHUB ↗</a></li>
+            <li><a href="#" data-scramble>TELEGRAM ↗</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <canvas class="footer__barcode" id="barcode" width="360" height="56" aria-label="Decorative barcode"></canvas>
+      <div class="footer__row mono">
+        <span>©2026 ARNIBYTE — ALL RIGHTS RESERVED</span>
+        <span class="footer__hint">PRESS <kbd>G</kbd> FOR GRID</span>
+        <span>SITE AS INSTRUMENT — v1.0</span>
+        <button class="footer__top" id="back-to-top">BACK TO TOP ↑</button>
+      </div>
+    </footer>
+
+    <!-- work detail overlay -->
+    <div class="work-overlay" id="work-overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="work-overlay-title">
+      <div class="work-overlay__inner">
+        <div class="work-overlay__head mono">
+          <span id="work-overlay-index">001</span>
+          <button class="work-overlay__close" id="work-overlay-close" aria-label="Close project">CLOSE ✕</button>
+        </div>
+        <h2 class="work-overlay__title" id="work-overlay-title"></h2>
+        <div class="work-overlay__grid">
+          <canvas id="work-overlay-canvas" width="960" height="640" aria-hidden="true"></canvas>
+          <div class="work-overlay__info">
+            <dl class="meta-list mono">
+              <div><dt>ROLE</dt><dd id="work-overlay-role"></dd></div>
+              <div><dt>YEAR</dt><dd id="work-overlay-year"></dd></div>
+              <div><dt>STACK</dt><dd id="work-overlay-stack"></dd></div>
+            </dl>
+            <p class="work-overlay__desc" id="work-overlay-desc"></p>
+            <button class="work-overlay__next mono" id="work-overlay-next">NEXT PROJECT →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- blueprint grid overlay (press G) -->
+    <div class="grid-overlay" id="grid-overlay" aria-hidden="true"></div>
+
+    <!-- film grain -->
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- custom cursor -->
+    <div class="cursor" id="cursor" aria-hidden="true">
+      <div class="cursor__dot" id="cursor-dot"></div>
+      <div class="cursor__label mono" id="cursor-label"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
