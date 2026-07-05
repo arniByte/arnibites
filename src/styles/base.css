@@ -1,23 +1,30 @@
 /* ============================================================
-   BASE — tokens, reset, typography, cursor, grain, grid overlay
+   BASE — tokens, reset, type, cursor, grain, reduced motion
+   Pure monochrome. No accent colour anywhere.
    ============================================================ */
 
 :root {
-  --c-black: #0a0a0a;
-  --c-ink: #111110;
-  --c-white: #f1f0ec;
-  --c-grey: #7a7a76;
-  --c-pink: #ff2e88;
+  --ink: #0b0b0b;
+  --ink-2: #171716;
+  --paper: #f4f2ed;
+  --paper-2: #e9e6de;
+  --ash: #8b897f; /* warm neutral grey, chosen not defaulted */
+  --ash-d: #6d6b63;
 
-  --f-display: 'Anton', 'Arial Narrow', sans-serif;
-  --f-serif: 'Instrument Serif', Georgia, serif;
-  --f-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --line: rgba(11, 11, 11, 0.16);
+  --line-soft: rgba(11, 11, 11, 0.09);
+  --line-inv: rgba(244, 242, 237, 0.18);
 
-  --pad: clamp(16px, 3.2vw, 48px);
-  --hud-h: 56px;
+  --serif: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
 
-  --ease-out: cubic-bezier(0.19, 1, 0.22, 1);
-  --ease-inout: cubic-bezier(0.77, 0, 0.175, 1);
+  /* calligraphic axis presets for Fraunces */
+  --wonk: 'SOFT' 40, 'WONK' 1, 'opsz' 144;
+
+  --pad: clamp(20px, 5vw, 88px);
+  --nav-h: 72px;
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-inout: cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 *,
@@ -32,9 +39,9 @@ html {
   scroll-behavior: smooth;
 }
 
-html.lenis {
+html.lenis,
+html.lenis body {
   height: auto;
-  scroll-behavior: auto;
 }
 
 .lenis.lenis-smooth {
@@ -42,24 +49,24 @@ html.lenis {
 }
 
 body {
-  background: var(--c-black);
-  color: var(--c-white);
-  font-family: var(--f-mono);
-  font-size: 14px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(15px, 1.05vw, 17px);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow-x: clip;
 }
 
 ::selection {
-  background: var(--c-pink);
-  color: var(--c-black);
+  background: var(--ink);
+  color: var(--paper);
 }
 
-img,
 canvas {
   display: block;
-  max-width: 100%;
 }
 
 a {
@@ -80,129 +87,73 @@ ol {
   list-style: none;
 }
 
+em {
+  font-style: italic;
+}
+
 :focus-visible {
-  outline: 2px solid var(--c-pink);
-  outline-offset: 3px;
+  outline: 1.5px solid currentColor;
+  outline-offset: 4px;
 }
 
 /* --- type utilities ------------------------------------------------ */
 
-.mono {
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
+.label {
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 500;
+  font-style: normal;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-}
-
-.serif-accent {
-  font-family: var(--f-serif);
-  font-style: italic;
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: 0;
-  color: var(--c-pink);
-}
-
-.accent {
-  color: var(--c-pink);
+  color: var(--ash-d);
 }
 
 .skip-link {
   position: fixed;
-  top: -100px;
+  top: -80px;
   left: var(--pad);
   z-index: 200;
-  padding: 10px 16px;
-  background: var(--c-pink);
-  color: var(--c-black);
-  font-family: var(--f-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  transition: top 0.2s;
+  padding: 10px 18px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  transition: top 0.25s var(--ease);
 }
 
 .skip-link:focus {
-  top: 10px;
+  top: 12px;
 }
 
-/* --- custom cursor -------------------------------------------------- */
+/* --- custom cursor: a single quiet ring ----------------------------- */
 
 .cursor {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
   z-index: 140;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
   pointer-events: none;
+  translate: -50% -50%;
   opacity: 0;
-  transition: opacity 0.3s;
+  mix-blend-mode: difference;
+  filter: invert(1);
+  transition:
+    width 0.3s var(--ease),
+    height 0.3s var(--ease),
+    opacity 0.3s;
 }
 
 body.has-cursor .cursor {
   opacity: 1;
 }
 
-.cursor::before,
-.cursor::after {
-  content: '';
-  position: absolute;
-  background: var(--c-white);
-  mix-blend-mode: difference;
-  transition: opacity 0.25s;
-}
-
-/* full-viewport crosshair lines */
-.cursor::before {
-  left: 0;
-  right: 0;
-  top: var(--cy, 50%);
-  height: 1px;
-  opacity: 0.28;
-}
-
-.cursor::after {
-  top: 0;
-  bottom: 0;
-  left: var(--cx, 50%);
-  width: 1px;
-  opacity: 0.28;
-}
-
-.cursor__dot {
-  position: absolute;
-  left: var(--cx, 50%);
-  top: var(--cy, 50%);
-  width: 8px;
-  height: 8px;
-  background: var(--c-white);
-  mix-blend-mode: difference;
-  translate: -50% -50%;
-  transition:
-    width 0.25s var(--ease-out),
-    height 0.25s var(--ease-out),
-    background 0.25s,
-    border-radius 0.25s;
-}
-
-body.cursor-hover .cursor__dot {
-  width: 44px;
-  height: 44px;
-  background: transparent;
-  outline: 1px solid var(--c-white);
-  border-radius: 50%;
-}
-
-body.cursor-hover .cursor::before,
-body.cursor-hover .cursor::after {
-  opacity: 0.1;
-}
-
-.cursor__label {
-  position: absolute;
-  left: var(--cx, 50%);
-  top: var(--cy, 50%);
-  translate: 14px 14px;
-  color: var(--c-pink);
-  font-size: 10px;
-  white-space: nowrap;
+body.cursor-hover .cursor {
+  width: 64px;
+  height: 64px;
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -211,78 +162,51 @@ body.cursor-hover .cursor::after {
   }
 }
 
-body.has-cursor {
-  cursor: none;
-}
-
-body.has-cursor a,
-body.has-cursor button {
-  cursor: none;
-}
-
-/* --- film grain ------------------------------------------------------ */
+/* --- paper grain ---------------------------------------------------- */
 
 .grain {
   position: fixed;
-  inset: -100px;
+  inset: -120px;
   z-index: 130;
   pointer-events: none;
-  opacity: 0.055;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain-shift 0.9s steps(4) infinite;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  animation: grain 1s steps(3) infinite;
 }
 
-@keyframes grain-shift {
+@keyframes grain {
   0% { transform: translate(0, 0); }
-  25% { transform: translate(-40px, 30px); }
-  50% { transform: translate(30px, -50px); }
-  75% { transform: translate(-30px, -20px); }
+  33% { transform: translate(-30px, 20px); }
+  66% { transform: translate(24px, -28px); }
   100% { transform: translate(0, 0); }
 }
 
-/* --- blueprint grid overlay (press G) -------------------------------- */
+/* --- scroll reveals (IntersectionObserver adds .is-in) --------------- */
 
-.grid-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 125;
-  pointer-events: none;
+html.js [data-reveal] {
   opacity: 0;
-  transition: opacity 0.35s;
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      rgba(255, 46, 136, 0.16) 0,
-      rgba(255, 46, 136, 0.16) 1px,
-      transparent 1px,
-      transparent calc((100% - 11px) / 12 + 1px)
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      rgba(255, 46, 136, 0.1) 0,
-      rgba(255, 46, 136, 0.1) 1px,
-      transparent 1px,
-      transparent 8px
-    );
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s var(--ease),
+    transform 0.9s var(--ease);
+  transition-delay: var(--reveal-delay, 0s);
 }
 
-.grid-overlay::after {
-  content: 'GRID — 12 COL / 8PX BASELINE';
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  translate: -50% 0;
-  font-family: var(--f-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--c-pink);
-}
-
-body.grid-on .grid-overlay {
+html.js [data-reveal].is-in {
   opacity: 1;
+  transform: none;
 }
 
-/* --- reduced motion --------------------------------------------------- */
+/* clip-rise for the contact lines (each line clips its own overflow) */
+html.js .contact__cta-line[data-reveal] {
+  transform: translateY(105%);
+}
+html.js .contact__cta-line[data-reveal].is-in {
+  transform: none;
+}
+
+/* --- reduced motion -------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -292,12 +216,14 @@ body.grid-on .grid-overlay {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001s !important;
   }
-
   html {
     scroll-behavior: auto;
   }
-
   .grain {
     animation: none;
+  }
+  html.js [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

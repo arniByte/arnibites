@@ -1,0 +1,160 @@
+/**
+ * Calm halftone atmosphere behind the hero (WebGL).
+ * A slow monochrome dot field that breathes and drifts — ink on paper,
+ * not a data readout. Faint cursor influence, no crosshair, no colour.
+ * Rendered small and scaled up for a soft printed texture.
+ */
+import { REDUCED_MOTION } from './utils';
+
+const VERT = `
+attribute vec2 a_pos;
+void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }
+`;
+
+const FRAG = `
+precision highp float;
+uniform vec2 u_res;
+uniform float u_time;
+uniform vec2 u_mouse;
+uniform float u_fade;
+
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+float noise(vec2 p){
+  vec2 i=floor(p), f=fract(p);
+  vec2 u=f*f*(3.0-2.0*f);
+  return mix(mix(hash(i),hash(i+vec2(1.,0.)),u.x),
+             mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),u.x),u.y);
+}
+float fbm(vec2 p){
+  float v=0.0, a=0.5;
+  for(int i=0;i<4;i++){ v+=a*noise(p); p*=2.0; a*=0.5; }
+  return v;
+}
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / u_res;
+  vec2 asp = vec2(u_res.x/u_res.y, 1.0);
+  vec2 p = uv * asp;
+  vec2 m = (u_mouse / u_res) * asp;
+
+  // slow drifting density field, biased so the centre stays open for type
+  float d = fbm(p*2.2 + vec2(u_time*0.02, -u_time*0.015));
+  d = 0.35 + d*0.4;
+
+  // fade density toward the centre so the wordmark reads clean
+  float centre = distance(p, asp*0.5);
+  d *= smoothstep(0.15, 0.95, centre);
+
+  // whisper of cursor lift
+  float md = distance(p, m);
+  d += 0.12 * exp(-md*md*7.0);
+
+  // halftone: dot radius from density on a fixed grid
+  float grid = 5.0;
+  vec2 cell = fract(gl_FragCoord.xy/grid) - 0.5;
+  float dot = length(cell);
+  float radius = d * 0.55 * u_fade;
+  float ink = smoothstep(radius, radius-0.14, dot);
+
+  // paper #f4f2ed -> ink #0b0b0b
+  vec3 paper = vec3(0.957,0.949,0.929);
+  vec3 col = mix(paper, vec3(0.043), ink*0.5);
+
+  gl_FragColor = vec4(col, 1.0);
+}
+`;
+
+const PIXEL = 2;
+
+export function initHalftone(canvas: HTMLCanvasElement): void {
+  const gl = canvas.getContext('webgl', { antialias: false, depth: false, alpha: false });
+
+  if (!gl) {
+    canvas.style.background =
+      'radial-gradient(rgba(11,11,11,0.14) 1px, transparent 1.4px) 0 0 / 6px 6px';
+    return;
+  }
+
+  const compile = (type: number, src: string): WebGLShader => {
+    const s = gl.createShader(type)!;
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  };
+
+  const prog = gl.createProgram()!;
+  gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+  gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, 'a_pos');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+  const uRes = gl.getUniformLocation(prog, 'u_res');
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+  const uFade = gl.getUniformLocation(prog, 'u_fade');
+
+  let mx = -9999;
+  let my = -9999;
+  let smx = mx;
+  let smy = my;
+  let fade = 0;
+  let visible = true;
+  let raf = 0;
+
+  const resize = (): void => {
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = Math.max(2, Math.floor(rect.width / PIXEL));
+    canvas.height = Math.max(2, Math.floor(rect.height / PIXEL));
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  };
+  resize();
+  window.addEventListener('resize', resize);
+
+  window.addEventListener(
+    'pointermove',
+    (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mx = (e.clientX - rect.left) / PIXEL;
+      my = (rect.height - (e.clientY - rect.top)) / PIXEL;
+    },
+    { passive: true },
+  );
+
+  const io = new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible && !raf) raf = requestAnimationFrame(frame);
+  });
+  io.observe(canvas);
+
+  const start = performance.now();
+
+  function frame(now: number): void {
+    raf = 0;
+    if (!visible || document.hidden) return;
+    fade = Math.min(1, fade + 0.02);
+    smx += (mx - smx) * 0.06;
+    smy += (my - smy) * 0.06;
+
+    gl!.uniform2f(uRes, canvas.width, canvas.height);
+    gl!.uniform1f(uTime, REDUCED_MOTION ? 8 : (now - start) / 1000);
+    gl!.uniform2f(uMouse, smx, smy);
+    gl!.uniform1f(uFade, fade);
+    gl!.drawArrays(gl!.TRIANGLES, 0, 3);
+
+    if (!REDUCED_MOTION || fade < 1) raf = requestAnimationFrame(frame);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && visible && !raf) raf = requestAnimationFrame(frame);
+  });
+
+  raf = requestAnimationFrame(frame);
+}

@@ -1,21 +1,19 @@
 /**
- * Custom cursor: full-viewport crosshair + trailing dot + context label.
- * Only active on fine pointers; the native cursor is left alone on touch.
+ * A single quiet cursor ring. No crosshair, no label — it just trails
+ * the pointer and swells over anything interactive.
  */
 import { FINE_POINTER, lerp } from './utils';
 
 export function initCursor(): void {
   if (!FINE_POINTER) return;
 
-  const root = document.getElementById('cursor');
-  const dot = document.getElementById('cursor-dot');
-  const label = document.getElementById('cursor-label');
-  if (!root || !dot || !label) return;
+  const ring = document.getElementById('cursor');
+  if (!ring) return;
 
   let tx = window.innerWidth / 2;
   let ty = window.innerHeight / 2;
-  let dx = tx;
-  let dy = ty;
+  let x = tx;
+  let y = ty;
   let active = false;
 
   window.addEventListener(
@@ -25,8 +23,8 @@ export function initCursor(): void {
       ty = e.clientY;
       if (!active) {
         active = true;
-        dx = tx;
-        dy = ty;
+        x = tx;
+        y = ty;
         document.body.classList.add('has-cursor');
       }
     },
@@ -35,35 +33,19 @@ export function initCursor(): void {
 
   const frame = (): void => {
     if (active) {
-      dx = lerp(dx, tx, 0.22);
-      dy = lerp(dy, ty, 0.22);
-      // crosshair snaps, dot trails
-      root.style.setProperty('--cx', `${tx}px`);
-      root.style.setProperty('--cy', `${ty}px`);
-      dot.style.left = `${dx}px`;
-      dot.style.top = `${dy}px`;
-      label.style.left = `${dx}px`;
-      label.style.top = `${dy}px`;
+      x = lerp(x, tx, 0.2);
+      y = lerp(y, ty, 0.2);
+      ring.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
     }
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
 
-  // hover states via delegation
   document.addEventListener('mouseover', (e) => {
-    const target = (e.target as HTMLElement).closest<HTMLElement>(
-      'a, button, [data-cursor]',
-    );
-    if (target) {
-      document.body.classList.add('cursor-hover');
-      label.textContent = target.dataset.cursor ?? '';
-    } else {
-      document.body.classList.remove('cursor-hover');
-      label.textContent = '';
-    }
+    const hit = (e.target as HTMLElement).closest('a, button, [data-cursor]');
+    document.body.classList.toggle('cursor-hover', !!hit);
   });
-
-  document.addEventListener('mouseleave', () => {
-    document.body.classList.remove('cursor-hover');
-  });
+  document.addEventListener('mouseleave', () =>
+    document.body.classList.remove('cursor-hover'),
+  );
 }

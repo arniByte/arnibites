@@ -1,41 +1,58 @@
 /**
- * Renders data from content.ts into the DOM — works index and
- * capabilities grid. Design and content stay decoupled.
+ * Renders content.ts into the DOM: ME copy, DIRECTIONS groups, socials.
+ * Content and design stay decoupled.
  */
-import { capabilities, works } from '../content';
+import { directions, identity, me } from '../content';
 
-export function renderWorksList(): void {
-  const list = document.getElementById('works-list');
-  if (!list) return;
+export function renderMe(): void {
+  const lead = document.getElementById('me-lead');
+  const quote = document.getElementById('me-quote');
+  const facts = document.getElementById('me-facts');
+  if (lead) lead.textContent = me.lead;
+  if (quote) quote.textContent = me.quote;
+  if (facts) {
+    facts.innerHTML = me.facts
+      .map((f) => `<div><dt>${f.k}</dt><dd>${f.v}</dd></div>`)
+      .join('');
+  }
+}
 
-  list.innerHTML = works
+export function renderDirections(): void {
+  const groups = document.getElementById('dir-groups');
+  if (!groups) return;
+
+  groups.innerHTML = directions
     .map(
-      (w, i) => `
-    <li>
-      <button class="work-row" data-work="${i}" data-cursor="OPEN" aria-haspopup="dialog">
-        <span class="work-row__index">${w.index}</span>
-        <span class="work-row__title">${w.title}</span>
-        <span class="work-row__cat">${w.category}</span>
-        <span class="work-row__year">${w.year}</span>
-        <span class="work-row__arrow" aria-hidden="true">↗</span>
-      </button>
-    </li>`,
+      (d) => `
+    <section class="dir__group" data-group="${d.key}">
+      <div class="dir__group-cap" data-reveal>
+        <h3 class="dir__group-name"><em>${d.label}</em></h3>
+        <p class="dir__group-note">${d.caption}</p>
+      </div>
+      <div class="dir__items">
+        ${d.items
+          .map(
+            (it, i) => `
+          <button class="item-row" data-group="${d.key}" data-seed="${it.seed}" data-cursor="Open" data-reveal style="--reveal-delay: ${(i * 0.06).toFixed(2)}s" aria-haspopup="dialog">
+            <span class="item-row__title">${it.title}</span>
+            <span class="item-row__meta">${it.meta}</span>
+            <span class="item-row__arrow" aria-hidden="true">↗</span>
+          </button>`,
+          )
+          .join('')}
+      </div>
+    </section>`,
     )
     .join('');
 }
 
-export function renderCapsGrid(): void {
-  const grid = document.getElementById('caps-grid');
-  if (!grid) return;
-
-  grid.innerHTML = capabilities
-    .map(
-      (c) => `
-    <li class="caps__cell">
-      <span class="caps__num">${c.num}</span>
-      <span class="caps__name">${c.name}</span>
-      <span class="caps__detail">${c.detail}</span>
-    </li>`,
-    )
-    .join('');
+export function renderSocials(): void {
+  const list = document.getElementById('contact-socials');
+  if (list) {
+    list.innerHTML = identity.socials
+      .map((s) => `<li><a href="${s.href}">${s.label} ↗</a></li>`)
+      .join('');
+  }
+  const footerName = document.getElementById('footer-name');
+  if (footerName) footerName.textContent = identity.name;
 }

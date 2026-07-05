@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/fraunces": "^5.2.9",
     "@fontsource/anton": "^5.2.5",
+    "@fontsource/fraunces": "^5.2.9",
     "@fontsource/ibm-plex-mono": "^5.2.5",
     "@fontsource/instrument-serif": "^5.2.5",
     "gsap": "^3.13.0",

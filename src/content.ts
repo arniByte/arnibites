@@ -1,101 +1,77 @@
 /**
  * Single source of truth for everything editable on the site.
- * Swap placeholders here — the design never needs to be touched.
+ * Two destinations: ME and DIRECTIONS (tools / art / recent).
+ * All copy below is intentional placeholder — swap it here, the
+ * design never needs to be touched.
  */
-
-export interface Work {
-  index: string;
-  title: string;
-  category: string;
-  year: string;
-  role: string;
-  stack: string;
-  description: string;
-  /** seed for the generative preview artwork */
-  seed: number;
-}
 
 export const identity = {
   name: 'ARNIBYTE',
-  role: 'DIGITAL DESIGNER — CREATIVE DEVELOPER',
+  wordmark: 'arnibyte',
+  role: 'Designer & maker',
   email: 'hello@arnibyte.work',
-  location: 'PLANET EARTH',
+  available: 'Open for work — 2026',
+  socials: [
+    { label: 'Instagram', href: '#' },
+    { label: 'Behance', href: '#' },
+    { label: 'Are.na', href: '#' },
+  ],
 };
 
-export const works: Work[] = [
-  {
-    index: '001',
-    title: 'SIGNAL / MAP',
-    category: 'INTERACTIVE INSTALLATION',
-    year: '2026',
-    role: 'ART DIRECTION, CREATIVE CODE',
-    stack: 'WEBGL — GLSL — TOUCHDESIGNER',
-    description:
-      'A room-scale data field that converts visitor movement into shifting monochrome topographies. Placeholder case study — real documentation will replace this text.',
-    seed: 11,
-  },
-  {
-    index: '002',
-    title: 'NULL OBJECT',
-    category: 'IDENTITY / MOTION',
-    year: '2025',
-    role: 'BRAND SYSTEM, MOTION DESIGN',
-    stack: 'FIGMA — AFTER EFFECTS — LOTTIE',
-    description:
-      'An anti-logo identity built from negative space and strict grids. Placeholder case study — real documentation will replace this text.',
-    seed: 27,
-  },
-  {
-    index: '003',
-    title: 'SOFT MACHINE',
-    category: 'WEB EXPERIENCE',
-    year: '2025',
-    role: 'DESIGN, FRONT-END DEVELOPMENT',
-    stack: 'TYPESCRIPT — GSAP — SHADERS',
-    description:
-      'A long-scroll narrative site where typography deforms under a simulated magnetic field. Placeholder case study — real documentation will replace this text.',
-    seed: 43,
-  },
-  {
-    index: '004',
-    title: 'DATA GARDEN',
-    category: 'GENERATIVE ART',
-    year: '2024',
-    role: 'CONCEPT, GENERATIVE SYSTEMS',
-    stack: 'CANVAS — P5 — CUSTOM PRNG',
-    description:
-      'Ten thousand unique halftone organisms grown from a single seed function. Placeholder case study — real documentation will replace this text.',
-    seed: 58,
-  },
-  {
-    index: '005',
-    title: 'WHITE NOISE',
-    category: 'SOUND / VISUAL',
-    year: '2024',
-    role: 'AUDIOVISUAL DIRECTION',
-    stack: 'MAX/MSP — GLSL — DMX',
-    description:
-      'A stroboscopic study of silence rendered as pure black-and-white frequency bars. Placeholder case study — real documentation will replace this text.',
-    seed: 74,
-  },
-  {
-    index: '006',
-    title: 'MONOLITH',
-    category: 'E-COMMERCE / DEV',
-    year: '2023',
-    role: 'FULL-STACK DEVELOPMENT',
-    stack: 'NEXT.JS — HEADLESS CMS — STRIPE',
-    description:
-      'A single-product store reduced to one page, one button, one decision. Placeholder case study — real documentation will replace this text.',
-    seed: 90,
-  },
-];
+/** the ME section — a short bio + a pull-quote, all placeholder */
+export const me = {
+  lead: 'A short paragraph about you goes here — who you are, what you make, and how you think about the work. Two or three sentences, no more. Replace this when you send me your bio.',
+  quote: 'Everything unnecessary, removed.',
+  facts: [
+    { k: 'Based in', v: 'Somewhere' },
+    { k: 'Working since', v: '20—' },
+    { k: 'Focus', v: 'Design · Art · Craft' },
+    { k: 'Reply within', v: 'A day' },
+  ],
+};
 
-export const capabilities: { num: string; name: string; detail: string }[] = [
-  { num: '01', name: 'ART DIRECTION', detail: 'CONCEPT / SYSTEMS / TASTE' },
-  { num: '02', name: 'INTERACTION DESIGN', detail: 'UX / UI / PROTOTYPING' },
-  { num: '03', name: 'CREATIVE DEVELOPMENT', detail: 'TS / WEBGL / GSAP' },
-  { num: '04', name: 'MOTION & 3D', detail: 'ANIMATION / BLENDER / AE' },
-  { num: '05', name: 'BRAND SYSTEMS', detail: 'IDENTITY / TYPE / GRIDS' },
-  { num: '06', name: 'GENERATIVE ART', detail: 'SHADERS / PRNG / PLOTTERS' },
+export interface DirectionItem {
+  title: string;
+  meta: string;
+  note: string;
+  seed: number;
+}
+
+export interface Direction {
+  key: 'tools' | 'art' | 'recent';
+  label: string;
+  caption: string;
+  items: DirectionItem[];
+}
+
+export const directions: Direction[] = [
+  {
+    key: 'tools',
+    label: 'Tools',
+    caption: 'The instruments and systems I build with.',
+    items: [
+      { title: 'The Grid', meta: 'System', note: 'A layout language I return to. Placeholder — replace with a real tool.', seed: 12 },
+      { title: 'Type Set', meta: 'Method', note: 'How I pair and scale faces. Placeholder — replace with a real tool.', seed: 31 },
+      { title: 'Ink & Paper', meta: 'Material', note: 'Working strictly in monochrome. Placeholder — replace with a real tool.', seed: 47 },
+    ],
+  },
+  {
+    key: 'art',
+    label: 'Art',
+    caption: 'Personal and commissioned pieces.',
+    items: [
+      { title: 'Study No. 1', meta: 'Print', note: 'A quiet composition. Placeholder — replace with a real piece.', seed: 63 },
+      { title: 'Untitled', meta: 'Drawing', note: 'Line and negative space. Placeholder — replace with a real piece.', seed: 78 },
+      { title: 'Field', meta: 'Generative', note: 'Grown from a single seed. Placeholder — replace with a real piece.', seed: 90 },
+    ],
+  },
+  {
+    key: 'recent',
+    label: 'Recent',
+    caption: 'The latest things, freshly made.',
+    items: [
+      { title: 'Latest Work', meta: '2026', note: 'The newest thing. Placeholder — replace with real recent work.', seed: 21 },
+      { title: 'In Progress', meta: '2026', note: 'Still on the table. Placeholder — replace with real recent work.', seed: 55 },
+    ],
+  },
 ];
