@@ -128,15 +128,29 @@ export function initHalftone(canvas: HTMLCanvasElement): void {
   resize();
   window.addEventListener('resize', resize);
 
-  window.addEventListener(
-    'pointermove',
-    (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mx = (e.clientX - rect.left) / PIXEL;
-      my = (rect.height - (e.clientY - rect.top)) / PIXEL;
-    },
-    { passive: true },
-  );
+  const setFromClient = (cx: number, cy: number): void => {
+    const rect = canvas.getBoundingClientRect();
+    mx = (cx - rect.left) / PIXEL;
+    my = (rect.height - (cy - rect.top)) / PIXEL;
+  };
+
+  // pointer + touch: ripples follow the cursor on desktop and the finger on mobile
+  window.addEventListener('pointermove', (e) => setFromClient(e.clientX, e.clientY), { passive: true });
+  window.addEventListener('pointerdown', (e) => setFromClient(e.clientX, e.clientY), { passive: true });
+
+  // device tilt nudges the field on phones with no pointer (best-effort, no prompt)
+  if (typeof DeviceOrientationEvent !== 'undefined') {
+    window.addEventListener(
+      'deviceorientation',
+      (e) => {
+        if (e.gamma == null || e.beta == null) return;
+        const rect = canvas.getBoundingClientRect();
+        mx = (0.5 + Math.max(-1, Math.min(1, e.gamma / 45)) * 0.5) * (rect.width / PIXEL);
+        my = (0.5 + Math.max(-1, Math.min(1, (e.beta - 45) / 45)) * 0.5) * (rect.height / PIXEL);
+      },
+      { passive: true },
+    );
+  }
 
   const io = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;

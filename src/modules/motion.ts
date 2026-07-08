@@ -39,6 +39,7 @@ export function prepareHeroIntro(): () => void {
   const eyebrow = document.getElementById('hero-eyebrow');
   const foot = document.querySelector('.hero__foot');
   const nav = document.getElementById('nav');
+  const scan = document.getElementById('hero-scan');
 
   gsap.set(word, { yPercent: 118 });
   gsap.set([eyebrow, foot], { opacity: 0, y: 16 });
@@ -50,6 +51,14 @@ export function prepareHeroIntro(): () => void {
       .to(eyebrow, { opacity: 1, y: 0, duration: 0.7 }, '-=0.9')
       .to(foot, { opacity: 1, y: 0, duration: 0.7 }, '-=0.7')
       .to(nav, { opacity: 1, duration: 0.6 }, '-=0.6');
+
+    // one-time lime scanline sweeps the hero — a colour signal with no cursor
+    if (scan) {
+      tl.set(scan, { top: '0%', opacity: 0 }, 0.2)
+        .to(scan, { opacity: 1, duration: 0.2 }, 0.2)
+        .to(scan, { top: '100%', duration: 1.15, ease: 'power1.inOut' }, 0.3)
+        .to(scan, { opacity: 0, duration: 0.35 }, '-=0.4');
+    }
   };
 }
 

@@ -18,6 +18,7 @@ import { initLenis, initMarquee, prepareHeroIntro } from './modules/motion';
 import { runPreloader } from './modules/preloader';
 import { renderDirections, renderMe, renderSocials } from './modules/render';
 import { initReveals } from './modules/reveal';
+import { initScrollAccents } from './modules/scroll';
 
 // content first, so every system below sees the full page
 renderMe();
@@ -48,9 +49,10 @@ initMagnetic();
 const halftone = document.getElementById('halftone') as HTMLCanvasElement | null;
 if (halftone) initHalftone(halftone);
 
-// scroll-in reveals (IntersectionObserver) + marquee
+// scroll-in reveals (IntersectionObserver) + marquee + scroll accents
 initReveals();
 initMarquee();
+initScrollAccents(lenis);
 
 // choreography: hide hero, preload, then play the entrance
 const playHero = prepareHeroIntro();

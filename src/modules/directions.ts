@@ -82,6 +82,37 @@ function initFilters(): void {
   const groups = [...document.querySelectorAll<HTMLElement>('.dir__group')];
   if (!bar) return;
 
+  // one shared lime pill that slides between chips (feature: lime carries state)
+  const pill = document.createElement('span');
+  pill.className = 'dir__filter-pill';
+  bar.appendChild(pill);
+  bar.classList.add('has-pill');
+
+  const movePill = (btn: HTMLElement | null, animate: boolean): void => {
+    if (!btn) return;
+    const box = { x: btn.offsetLeft, y: btn.offsetTop, width: btn.offsetWidth, height: btn.offsetHeight };
+    if (animate && !REDUCED_MOTION) gsap.to(pill, { ...box, duration: 0.5, ease: 'power3.inOut' });
+    else gsap.set(pill, box);
+  };
+
+  const activeChip = (): HTMLElement | null => bar.querySelector('.dir__filter.is-active');
+  // position once the layout is settled (chips + fonts)
+  requestAnimationFrame(() => movePill(activeChip(), false));
+  window.addEventListener('resize', () => movePill(activeChip(), false));
+
+  /** cascade a lime underline sweep across the incoming rows */
+  const sweep = (shown: HTMLElement[]): void => {
+    if (REDUCED_MOTION) return;
+    shown
+      .flatMap((g) => [...g.querySelectorAll<HTMLElement>('.item-row')])
+      .forEach((row, i) => {
+        window.setTimeout(() => {
+          row.classList.add('is-tap');
+          window.setTimeout(() => row.classList.remove('is-tap'), 340);
+        }, 100 + i * 70);
+      });
+  };
+
   bar.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('.dir__filter');
     if (!btn) return;
@@ -92,19 +123,21 @@ function initFilters(): void {
       b.classList.toggle('is-active', active);
       b.setAttribute('aria-selected', String(active));
     });
+    movePill(btn, true);
 
     groups.forEach((g) => {
       const show = filter === 'all' || g.dataset.group === filter;
       g.classList.toggle('is-hidden', !show);
     });
 
+    const shown = groups.filter((g) => !g.classList.contains('is-hidden'));
     if (!REDUCED_MOTION) {
-      const shown = groups.filter((g) => !g.classList.contains('is-hidden'));
       gsap.fromTo(
         shown,
         { opacity: 0, y: 14 },
         { opacity: 1, y: 0, duration: 0.5, stagger: 0.06, ease: 'power3.out' },
       );
+      sweep(shown);
     }
   });
 }
@@ -148,11 +181,14 @@ function initPreview(): void {
     if (!shown) {
       shown = true;
       gsap.to(panel, { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'power3.out' });
+      // colour blooms where you look — grayscale duotone → true colour
+      window.setTimeout(() => img.classList.add('is-colour'), 160);
     }
   });
 
   groups.addEventListener('pointerleave', () => {
     shown = false;
+    img.classList.remove('is-colour');
     gsap.to(panel, { autoAlpha: 0, scale: 0.94, duration: 0.3, ease: 'power3.in' });
   });
 }
@@ -193,6 +229,8 @@ function initOverlay(lenis: Lenis | null): void {
       }
     }
     setMedia(canvas, img, it);
+    // the overlay is the payoff — the shot arrives already in full colour
+    img.classList.toggle('is-colour', !!it.image);
   };
 
   const show = (i: number, from?: HTMLElement): void => {
@@ -203,10 +241,17 @@ function initOverlay(lenis: Lenis | null): void {
       document.body.classList.add('overlay-open');
       overlay.setAttribute('aria-hidden', 'false');
       lenis?.stop();
+      // the overlay wipes open from the clicked row's band, so the click
+      // feels causally connected to the detail view
+      let originY = 100;
+      if (from) {
+        const r = from.getBoundingClientRect();
+        originY = clamp(((r.top + r.height / 2) / (window.innerHeight || 1)) * 100, 0, 100);
+      }
       gsap.fromTo(
         overlay,
-        { clipPath: 'inset(100% 0 0 0)' },
-        { clipPath: 'inset(0% 0 0 0)', duration: REDUCED_MOTION ? 0 : 0.7, ease: 'power4.inOut' },
+        { clipPath: `inset(${originY}% 0 ${100 - originY}% 0)` },
+        { clipPath: 'inset(0% 0 0% 0)', duration: REDUCED_MOTION ? 0 : 0.75, ease: 'power4.inOut' },
       );
     }
     gsap.fromTo(
@@ -251,7 +296,17 @@ function initOverlay(lenis: Lenis | null): void {
     });
   }
 
-  document.getElementById('dir-groups')?.addEventListener('click', (e) => {
+  const dirGroups = document.getElementById('dir-groups');
+
+  // touch has no hover — flash the lime underline on press for feedback
+  dirGroups?.addEventListener('pointerdown', (e) => {
+    const row = (e.target as HTMLElement).closest<HTMLElement>('.item-row');
+    if (!row) return;
+    row.classList.add('is-tap');
+    window.setTimeout(() => row.classList.remove('is-tap'), 420);
+  });
+
+  dirGroups?.addEventListener('click', (e) => {
     const row = (e.target as HTMLElement).closest<HTMLElement>('.item-row');
     if (!row) return;
     const i = flat.findIndex((f) => f.seed === Number(row.dataset.seed));
