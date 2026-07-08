@@ -19,7 +19,7 @@ export const identity = {
 
 /** the ME section — a short bio + a pull-quote + portrait */
 export const me = {
-  lead: 'A short paragraph about you goes here — who you are, what you make, and how you think about the work. Two or three sentences, no more. Replace this when you send me your bio.',
+  lead: "I'll let my agent introduce me — it knows the work better than I'd admit: Arni is a designer and developer who turns the browser into an instrument. He built Weaver, a sound-design studio, and Reflect, an image-effects console — work that's hands-on, monochrome by instinct, and fond of the details most people scroll past.",
   quote: 'Everything unnecessary, removed.',
   portrait: '/me.png',
   facts: [

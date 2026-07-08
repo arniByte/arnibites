@@ -24,20 +24,49 @@ const flat: FlatItem[] = directions.flatMap((d) =>
   d.items.map((it) => ({ group: d.label, ...it })),
 );
 
-/** paint a media slot: draw generative art, then reveal a real image if it loads */
+/**
+ * Paint a media slot. Generative art is the fallback; a real image (shown
+ * whole, `object-fit: contain`) covers it once loaded, and the art canvas is
+ * hidden so it can't peek through the letterbox. Handles the cached case
+ * where re-setting the same `src` fires no `load` event.
+ */
 function setMedia(canvas: HTMLCanvasElement, img: HTMLImageElement, item: FlatItem): void {
-  drawItemArt(canvas, item.seed);
-  img.classList.remove('is-loaded');
   img.onload = null;
   img.onerror = null;
-  if (item.image) {
-    img.alt = item.title;
-    img.onload = () => img.classList.add('is-loaded');
-    img.onerror = () => img.removeAttribute('src'); // keep the art fallback
-    img.src = item.image;
-  } else {
+
+  const showArt = (): void => {
+    canvas.style.display = '';
+    drawItemArt(canvas, item.seed);
+  };
+
+  if (!item.image) {
+    img.classList.remove('is-loaded');
     img.removeAttribute('src');
+    showArt();
+    return;
   }
+
+  const reveal = (): void => {
+    img.classList.add('is-loaded');
+    canvas.style.display = 'none';
+  };
+  const fail = (): void => {
+    img.removeAttribute('src');
+    img.classList.remove('is-loaded');
+    showArt();
+  };
+
+  img.alt = item.title;
+  img.onload = reveal;
+  img.onerror = fail;
+
+  if (img.getAttribute('src') !== item.image) {
+    img.classList.remove('is-loaded');
+    showArt(); // fallback while the new image decodes
+    img.src = item.image;
+  }
+  // cached image emits no load event — reveal immediately
+  if (img.complete && img.naturalWidth > 0) reveal();
 }
 
 export function initDirections(lenis: Lenis | null): void {
@@ -236,8 +265,13 @@ function initOverlay(lenis: Lenis | null): void {
     if (!open) return;
     if (e.key === 'Escape') hide();
     if (e.key === 'Tab') {
-      const focusables = [closeBtn, nextBtn];
-      const idx = focusables.indexOf(document.activeElement as HTMLButtonElement);
+      // trap focus across the visible controls (Visit only when shown)
+      const focusables = [
+        closeBtn,
+        visitEl && !visitEl.hidden ? visitEl : null,
+        nextBtn,
+      ].filter(Boolean) as HTMLElement[];
+      const idx = focusables.indexOf(document.activeElement as HTMLElement);
       e.preventDefault();
       const next = e.shiftKey
         ? idx <= 0 ? focusables.length - 1 : idx - 1
