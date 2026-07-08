@@ -50,7 +50,7 @@ export function renderSocials(): void {
   const list = document.getElementById('contact-socials');
   if (list) {
     list.innerHTML = identity.socials
-      .map((s) => `<li><a href="${s.href}">${s.label} ↗</a></li>`)
+      .map((s) => `<li><a href="${s.href}" data-magnetic="0.3">${s.label} ↗</a></li>`)
       .join('');
   }
   const footerName = document.getElementById('footer-name');

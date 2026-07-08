@@ -8,8 +8,12 @@
   --ink-2: #171716;
   --paper: #f4f2ed;
   --paper-2: #e9e6de;
-  --ash: #8b897f; /* warm neutral grey, chosen not defaulted */
-  --ash-d: #6d6b63;
+  /* greys tuned for real contrast: -d on paper (~6.8:1), plain on ink (~6.6:1) */
+  --ash: #9a988d;
+  --ash-d: #55534a;
+
+  --lime: #c6f24a; /* the interaction colour — lives in the cursor */
+  --lime-deep: #8fae1f; /* readable lime edge on paper */
 
   --line: rgba(11, 11, 11, 0.16);
   --line-soft: rgba(11, 11, 11, 0.09);
@@ -125,39 +129,76 @@ em {
   top: 12px;
 }
 
-/* --- custom cursor: a single quiet ring ----------------------------- */
+/* --- custom cursor: lime dot + trailing ring, visible on any ground --- */
 
-.cursor {
+.cursor,
+.cursor__dot {
   position: fixed;
   top: 0;
   left: 0;
   z-index: 140;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--ink);
-  border-radius: 50%;
   pointer-events: none;
-  translate: -50% -50%;
   opacity: 0;
-  mix-blend-mode: difference;
-  filter: invert(1);
+  will-change: transform;
+}
+
+/* trailing ring */
+.cursor {
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 1.5px solid var(--lime);
+  border-radius: 50%;
+  /* dark rim so the lime reads even on the pale paper sections */
+  box-shadow:
+    0 0 0 1px rgba(11, 11, 11, 0.28),
+    inset 0 0 0 1px rgba(11, 11, 11, 0.18);
   transition:
-    width 0.3s var(--ease),
-    height 0.3s var(--ease),
+    width 0.28s var(--ease),
+    height 0.28s var(--ease),
+    margin 0.28s var(--ease),
+    background 0.28s var(--ease),
     opacity 0.3s;
 }
 
-body.has-cursor .cursor {
+/* leading dot */
+.cursor__dot {
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  background: var(--lime);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(11, 11, 11, 0.3);
+}
+
+body.has-cursor .cursor,
+body.has-cursor .cursor__dot {
   opacity: 1;
 }
 
+/* hide the native arrow only while our cursor is live */
+body.has-cursor,
+body.has-cursor a,
+body.has-cursor button {
+  cursor: none;
+}
+
 body.cursor-hover .cursor {
-  width: 64px;
-  height: 64px;
+  width: 66px;
+  height: 66px;
+  margin: -33px 0 0 -33px;
+  background: rgba(198, 242, 74, 0.14);
+}
+
+body.cursor-down .cursor {
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
 }
 
 @media (hover: none), (pointer: coarse) {
-  .cursor {
+  .cursor,
+  .cursor__dot {
     display: none;
   }
 }

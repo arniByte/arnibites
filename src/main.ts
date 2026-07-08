@@ -12,6 +12,7 @@ import { initBackToTop, initMenu } from './modules/chrome';
 import { initCursor } from './modules/cursor';
 import { initDirections } from './modules/directions';
 import { initHalftone } from './modules/halftone';
+import { initMagnetic } from './modules/magnetic';
 import { initLenis, initMarquee, prepareHeroIntro } from './modules/motion';
 import { runPreloader } from './modules/preloader';
 import { renderDirections, renderMe, renderSocials } from './modules/render';
@@ -32,6 +33,7 @@ initCursor();
 initMenu(lenis);
 initBackToTop(lenis);
 initDirections(lenis);
+initMagnetic();
 
 const halftone = document.getElementById('halftone') as HTMLCanvasElement | null;
 if (halftone) initHalftone(halftone);

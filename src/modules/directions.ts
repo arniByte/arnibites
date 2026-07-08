@@ -1,8 +1,8 @@
 /**
  * DIRECTIONS interactions:
  *  - filter chips (All / Tools / Art / Recent) show/hide groups
- *  - cursor-trailing generative preview on row hover (fine pointers)
- *  - full-screen detail overlay on click, with Next cycling
+ *  - cursor-trailing preview on row hover (real image, else generative art)
+ *  - full-screen detail overlay with parallax media, Visit link, Next cycling
  */
 import gsap from 'gsap';
 import type Lenis from 'lenis';
@@ -16,11 +16,29 @@ interface FlatItem {
   meta: string;
   note: string;
   seed: number;
+  image?: string;
+  link?: string;
 }
 
 const flat: FlatItem[] = directions.flatMap((d) =>
   d.items.map((it) => ({ group: d.label, ...it })),
 );
+
+/** paint a media slot: draw generative art, then reveal a real image if it loads */
+function setMedia(canvas: HTMLCanvasElement, img: HTMLImageElement, item: FlatItem): void {
+  drawItemArt(canvas, item.seed);
+  img.classList.remove('is-loaded');
+  img.onload = null;
+  img.onerror = null;
+  if (item.image) {
+    img.alt = item.title;
+    img.onload = () => img.classList.add('is-loaded');
+    img.onerror = () => img.removeAttribute('src'); // keep the art fallback
+    img.src = item.image;
+  } else {
+    img.removeAttribute('src');
+  }
+}
 
 export function initDirections(lenis: Lenis | null): void {
   initFilters();
@@ -70,7 +88,8 @@ function initPreview(): void {
   const groups = document.getElementById('dir-groups');
   const panel = document.getElementById('item-preview');
   const canvas = document.getElementById('item-preview-canvas') as HTMLCanvasElement | null;
-  if (!groups || !panel || !canvas) return;
+  const img = document.getElementById('item-preview-img') as HTMLImageElement | null;
+  if (!groups || !panel || !canvas || !img) return;
 
   gsap.set(panel, { autoAlpha: 0, scale: 0.94 });
   const xTo = gsap.quickTo(panel, 'x', { duration: 0.45, ease: 'power3' });
@@ -94,7 +113,9 @@ function initPreview(): void {
   groups.addEventListener('pointerover', (e) => {
     const row = (e.target as HTMLElement).closest<HTMLElement>('.item-row');
     if (!row) return;
-    drawItemArt(canvas, Number(row.dataset.seed));
+    const item = flat.find((f) => f.seed === Number(row.dataset.seed));
+    if (!item) return;
+    setMedia(canvas, img, item);
     if (!shown) {
       shown = true;
       gsap.to(panel, { autoAlpha: 1, scale: 1, duration: 0.35, ease: 'power3.out' });
@@ -111,20 +132,21 @@ function initPreview(): void {
 
 function initOverlay(lenis: Lenis | null): void {
   const overlay = document.getElementById('overlay');
+  const media = document.getElementById('overlay-media');
   const canvas = document.getElementById('overlay-canvas') as HTMLCanvasElement | null;
+  const img = document.getElementById('overlay-img') as HTMLImageElement | null;
   const titleEl = document.getElementById('overlay-title');
   const kickerEl = document.getElementById('overlay-kicker');
   const metaEl = document.getElementById('overlay-meta');
   const noteEl = document.getElementById('overlay-note');
+  const visitEl = document.getElementById('overlay-visit') as HTMLAnchorElement | null;
   const closeBtn = document.getElementById('overlay-close');
   const nextBtn = document.getElementById('overlay-next');
-  if (!overlay || !canvas || !titleEl || !closeBtn || !nextBtn) return;
+  if (!overlay || !media || !canvas || !img || !titleEl || !closeBtn || !nextBtn) return;
 
   let current = -1;
   let open = false;
   let opener: HTMLElement | null = null;
-
-  const findIndex = (seed: number): number => flat.findIndex((f) => f.seed === seed);
 
   const fill = (i: number): void => {
     const it = flat[i];
@@ -133,7 +155,15 @@ function initOverlay(lenis: Lenis | null): void {
     if (kickerEl) kickerEl.textContent = `${it.group} — ${String(i + 1).padStart(2, '0')} / ${String(flat.length).padStart(2, '0')}`;
     if (metaEl) metaEl.textContent = it.meta;
     if (noteEl) noteEl.textContent = it.note;
-    drawItemArt(canvas, it.seed);
+    if (visitEl) {
+      if (it.link) {
+        visitEl.href = it.link;
+        visitEl.hidden = false;
+      } else {
+        visitEl.hidden = true;
+      }
+    }
+    setMedia(canvas, img, it);
   };
 
   const show = (i: number, from?: HTMLElement): void => {
@@ -151,7 +181,7 @@ function initOverlay(lenis: Lenis | null): void {
       );
     }
     gsap.fromTo(
-      [titleEl, canvas],
+      [titleEl, media],
       { y: 26, opacity: 0 },
       { y: 0, opacity: 1, duration: REDUCED_MOTION ? 0 : 0.55, stagger: 0.08, delay: 0.18, ease: 'power3.out' },
     );
@@ -176,10 +206,26 @@ function initOverlay(lenis: Lenis | null): void {
     });
   };
 
+  // subtle parallax on the media as the pointer moves across it
+  if (FINE_POINTER && !REDUCED_MOTION) {
+    const px = gsap.quickTo([canvas, img], 'xPercent', { duration: 0.6, ease: 'power3' });
+    const py = gsap.quickTo([canvas, img], 'yPercent', { duration: 0.6, ease: 'power3' });
+    gsap.set([canvas, img], { scale: 1.06 });
+    media.addEventListener('pointermove', (e) => {
+      const r = media.getBoundingClientRect();
+      px(((e.clientX - r.left) / r.width - 0.5) * -6);
+      py(((e.clientY - r.top) / r.height - 0.5) * -6);
+    });
+    media.addEventListener('pointerleave', () => {
+      px(0);
+      py(0);
+    });
+  }
+
   document.getElementById('dir-groups')?.addEventListener('click', (e) => {
     const row = (e.target as HTMLElement).closest<HTMLElement>('.item-row');
     if (!row) return;
-    const i = findIndex(Number(row.dataset.seed));
+    const i = flat.findIndex((f) => f.seed === Number(row.dataset.seed));
     if (i >= 0) show(i, row);
   });
 

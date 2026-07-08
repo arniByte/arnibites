@@ -35,6 +35,10 @@ export interface DirectionItem {
   meta: string;
   note: string;
   seed: number;
+  /** optional real screenshot in /public/projects; falls back to generative art */
+  image?: string;
+  /** optional live link — adds a "Visit ↗" action in the overlay */
+  link?: string;
 }
 
 export interface Direction {
@@ -70,8 +74,22 @@ export const directions: Direction[] = [
     label: 'Recent',
     caption: 'The latest things, freshly made.',
     items: [
-      { title: 'Latest Work', meta: '2026', note: 'The newest thing. Placeholder — replace with real recent work.', seed: 21 },
-      { title: 'In Progress', meta: '2026', note: 'Still on the table. Placeholder — replace with real recent work.', seed: 55 },
+      {
+        title: 'Weaver',
+        meta: 'Web · 2026',
+        note: 'A live web experience. Short one-line description of Weaver goes here — tell me what it does and I will finalise it.',
+        seed: 21,
+        image: '/projects/weaver.jpg',
+        link: 'https://weaver-vert.vercel.app/',
+      },
+      {
+        title: 'Reflect',
+        meta: 'Web · 2026',
+        note: 'A live web experience. Short one-line description of Reflect goes here — tell me what it does and I will finalise it.',
+        seed: 55,
+        image: '/projects/reflect.jpg',
+        link: 'https://reflect-gamma-one.vercel.app/',
+      },
     ],
   },
 ];

@@ -32,8 +32,8 @@
     <header class="nav" id="nav">
       <a class="nav__brand" href="#top">ARNIBYTE</a>
       <nav class="nav__links" aria-label="Primary">
-        <a href="#me" data-nav>Me</a>
-        <a href="#directions" data-nav>Directions</a>
+        <a href="#me" data-nav data-magnetic="0.4">Me</a>
+        <a href="#directions" data-nav data-magnetic="0.4">Directions</a>
       </nav>
       <button class="nav__menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu">
         Menu
@@ -64,7 +64,7 @@
         </h1>
         <div class="hero__foot">
           <p class="hero__tag">A portfolio kept as a piece of art — quiet, monochrome, made by hand.</p>
-          <a class="hero__scroll" href="#me" aria-label="Scroll to start">
+          <a class="hero__scroll" href="#me" aria-label="Scroll to start" data-magnetic="0.3">
             <span>Begin</span>
             <i aria-hidden="true"></i>
           </a>
@@ -104,16 +104,19 @@
         </header>
 
         <div class="dir__filters" id="dir-filters" data-reveal role="tablist" aria-label="Filter directions">
-          <button class="dir__filter is-active" data-filter="all" role="tab" aria-selected="true">All</button>
-          <button class="dir__filter" data-filter="tools" role="tab" aria-selected="false">Tools</button>
-          <button class="dir__filter" data-filter="art" role="tab" aria-selected="false">Art</button>
-          <button class="dir__filter" data-filter="recent" role="tab" aria-selected="false">Recent</button>
+          <button class="dir__filter is-active" data-filter="all" data-magnetic="0.25" role="tab" aria-selected="true">All</button>
+          <button class="dir__filter" data-filter="tools" data-magnetic="0.25" role="tab" aria-selected="false">Tools</button>
+          <button class="dir__filter" data-filter="art" data-magnetic="0.25" role="tab" aria-selected="false">Art</button>
+          <button class="dir__filter" data-filter="recent" data-magnetic="0.25" role="tab" aria-selected="false">Recent</button>
         </div>
 
         <div class="dir__groups" id="dir-groups"></div>
 
         <div class="item-preview" id="item-preview" aria-hidden="true">
-          <canvas id="item-preview-canvas" width="440" height="320"></canvas>
+          <div class="media">
+            <canvas id="item-preview-canvas" width="440" height="320"></canvas>
+            <img id="item-preview-img" alt="" />
+          </div>
         </div>
       </section>
 
@@ -125,7 +128,7 @@
           <span class="contact__cta-line" data-reveal style="--reveal-delay: 0.12s"><em>hello</em></span>
         </a>
         <div class="contact__row" data-reveal>
-          <a class="contact__mail" href="mailto:hello@arnibyte.work">hello@arnibyte.work</a>
+          <a class="contact__mail" href="mailto:hello@arnibyte.work" data-magnetic="0.25">hello@arnibyte.work</a>
           <ul class="contact__socials" id="contact-socials"></ul>
         </div>
       </section>
@@ -135,7 +138,7 @@
       <span id="footer-name">ARNIBYTE</span>
       <span>Portfolio — Volume One</span>
       <span>©2026</span>
-      <button class="footer__top" id="back-to-top">Top</button>
+      <button class="footer__top" id="back-to-top" data-magnetic="0.4">Top</button>
     </footer>
 
     <!-- item detail overlay -->
@@ -143,15 +146,21 @@
       <div class="overlay__inner">
         <div class="overlay__head">
           <span id="overlay-kicker"></span>
-          <button class="overlay__close" id="overlay-close" aria-label="Close">Close</button>
+          <button class="overlay__close" id="overlay-close" aria-label="Close" data-magnetic="0.3">Close</button>
         </div>
         <h2 class="overlay__title" id="overlay-title"></h2>
         <div class="overlay__grid">
-          <canvas id="overlay-canvas" width="1000" height="680" aria-hidden="true"></canvas>
+          <div class="overlay__media media" id="overlay-media">
+            <canvas id="overlay-canvas" width="1000" height="680" aria-hidden="true"></canvas>
+            <img id="overlay-img" alt="" />
+          </div>
           <div class="overlay__info">
             <p class="overlay__meta" id="overlay-meta"></p>
             <p class="overlay__note" id="overlay-note"></p>
-            <button class="overlay__next" id="overlay-next">Next</button>
+            <div class="overlay__actions">
+              <a class="overlay__visit" id="overlay-visit" href="#" target="_blank" rel="noopener" hidden>Visit ↗</a>
+              <button class="overlay__next" id="overlay-next" data-magnetic="0.3">Next</button>
+            </div>
           </div>
         </div>
       </div>
@@ -159,6 +168,7 @@
 
     <div class="grain" aria-hidden="true"></div>
     <div class="cursor" id="cursor" aria-hidden="true"></div>
+    <div class="cursor__dot" id="cursor-dot" aria-hidden="true"></div>
 
     <script type="module" src="/src/main.ts"></script>
   </body>

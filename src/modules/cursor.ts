@@ -1,51 +1,55 @@
 /**
- * A single quiet cursor ring. No crosshair, no label — it just trails
- * the pointer and swells over anything interactive.
+ * Lime cursor: a leading dot that tracks the pointer almost 1:1 and a
+ * ring that eases behind it. Solid colour (no blend mode) with a dark
+ * rim, so it stays visible on both the paper and the ink sections.
  */
-import { FINE_POINTER, lerp } from './utils';
+import gsap from 'gsap';
+import { FINE_POINTER } from './utils';
 
 export function initCursor(): void {
   if (!FINE_POINTER) return;
 
   const ring = document.getElementById('cursor');
-  if (!ring) return;
+  const dot = document.getElementById('cursor-dot');
+  if (!ring || !dot) return;
 
-  let tx = window.innerWidth / 2;
-  let ty = window.innerHeight / 2;
-  let x = tx;
-  let y = ty;
-  let active = false;
+  // GPU-friendly quickTo setters — the dot is snappy, the ring lags for feel
+  const dotX = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power3' });
+  const dotY = gsap.quickTo(dot, 'y', { duration: 0.12, ease: 'power3' });
+  const ringX = gsap.quickTo(ring, 'x', { duration: 0.42, ease: 'power3' });
+  const ringY = gsap.quickTo(ring, 'y', { duration: 0.42, ease: 'power3' });
+
+  let started = false;
 
   window.addEventListener(
     'pointermove',
     (e) => {
-      tx = e.clientX;
-      ty = e.clientY;
-      if (!active) {
-        active = true;
-        x = tx;
-        y = ty;
+      dotX(e.clientX);
+      dotY(e.clientY);
+      ringX(e.clientX);
+      ringY(e.clientY);
+      if (!started) {
+        started = true;
+        // jump the ring to the pointer so it doesn't fly in from 0,0
+        gsap.set([ring, dot], { x: e.clientX, y: e.clientY });
         document.body.classList.add('has-cursor');
       }
     },
     { passive: true },
   );
 
-  const frame = (): void => {
-    if (active) {
-      x = lerp(x, tx, 0.2);
-      y = lerp(y, ty, 0.2);
-      ring.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-    }
-    requestAnimationFrame(frame);
-  };
-  requestAnimationFrame(frame);
+  // hide while the pointer is off the window, show on return
+  window.addEventListener('pointerleave', () => document.body.classList.remove('has-cursor'));
+  window.addEventListener('pointerenter', () => {
+    if (started) document.body.classList.add('has-cursor');
+  });
 
+  window.addEventListener('pointerdown', () => document.body.classList.add('cursor-down'));
+  window.addEventListener('pointerup', () => document.body.classList.remove('cursor-down'));
+
+  // grow over anything interactive (event delegation, survives re-renders)
   document.addEventListener('mouseover', (e) => {
     const hit = (e.target as HTMLElement).closest('a, button, [data-cursor]');
     document.body.classList.toggle('cursor-hover', !!hit);
   });
-  document.addEventListener('mouseleave', () =>
-    document.body.classList.remove('cursor-hover'),
-  );
 }

@@ -53,12 +53,12 @@ void main(){
   float grid = 5.0;
   vec2 cell = fract(gl_FragCoord.xy/grid) - 0.5;
   float dot = length(cell);
-  float radius = d * 0.55 * u_fade;
+  float radius = d * 0.5 * u_fade;
   float ink = smoothstep(radius, radius-0.14, dot);
 
-  // paper #f4f2ed -> ink #0b0b0b
+  // paper #f4f2ed -> ink #0b0b0b, kept light so text stays legible over it
   vec3 paper = vec3(0.957,0.949,0.929);
-  vec3 col = mix(paper, vec3(0.043), ink*0.5);
+  vec3 col = mix(paper, vec3(0.043), ink*0.34);
 
   gl_FragColor = vec4(col, 1.0);
 }
