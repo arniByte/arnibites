@@ -11,6 +11,7 @@ export function runPreloader(): Promise<void> {
 
   const mark = document.getElementById('preloader-mark');
   const fill = document.getElementById('preloader-fill');
+  const count = document.getElementById('preloader-count');
 
   if (REDUCED_MOTION) {
     el.remove();
@@ -37,8 +38,23 @@ export function runPreloader(): Promise<void> {
 
     gsap.set(mark, { opacity: 0, y: 12 });
 
+    // the lime hairline fills while a percent counter ticks 00 -> 100
+    const state = { v: 0 };
+
     tl.to(mark, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' })
-      .to(fill, { scaleX: 1, duration: dur, ease: 'power2.inOut' }, '-=0.35')
+      .to(
+        state,
+        {
+          v: 100,
+          duration: dur,
+          ease: 'power2.inOut',
+          onUpdate: () => {
+            if (fill) fill.style.transform = `scaleX(${state.v / 100})`;
+            if (count) count.textContent = String(Math.round(state.v)).padStart(2, '0');
+          },
+        },
+        '-=0.35',
+      )
       .add(() => {
         tl.pause();
         Promise.race([
@@ -46,7 +62,7 @@ export function runPreloader(): Promise<void> {
           new Promise((r) => setTimeout(r, 1500)),
         ]).then(() => tl.resume());
       })
-      .to(mark, { opacity: 0, y: -10, duration: 0.4, ease: 'power2.in' }, '+=0.1')
+      .to([mark, count], { opacity: 0, y: -10, duration: 0.4, ease: 'power2.in' }, '+=0.1')
       .to(el, { clipPath: 'inset(0 0 100% 0)', duration: 0.85, ease: 'power4.inOut' }, '-=0.15');
   });
 }

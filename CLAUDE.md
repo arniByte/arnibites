@@ -16,9 +16,12 @@ tools. Kept as "a piece of art": quiet, monochrome, calligraphic.
 
 ## Design rules (keep these)
 - **Palette is strictly monochrome**: `--ink #0b0b0b`, `--paper #f4f2ed`, warm greys
-  (`--ash`, `--ash-d`). The **only** accent is `--lime` (#c6f24a) and it lives in the
-  **cursor** — "the site is mono; the cursor is the only colour". Do not add other hues
-  to the chrome. Real project screenshots keep their own colour (they're content).
+  (`--ash`, `--ash-d`). The **only** accent is `--lime` (#c6f24a, plus `--lime-deep`
+  #8fae1f for readability on paper). Lime is the **interaction colour**: it carries
+  state (active filter pill), reward (project colour-bloom, hover underline), and the
+  first-visit signal (preloader fill, hero scanline) — always resolving back to neutral,
+  so monochrome stays the resting state. Do not add other hues to the chrome. Real
+  project screenshots default to a grayscale duotone and bloom to true colour on intent.
 - **One type voice**: Fraunces Variable, leaning on its italic + SOFT/WONK axes
   (`--wonk` token). No second display face.
 - Figure/ground inversion for rhythm: paper hero → ink ME plate → paper Directions.
@@ -41,7 +44,11 @@ tools. Kept as "a piece of art": quiet, monochrome, calligraphic.
   - `reveal.ts` — IntersectionObserver scroll-reveals (`[data-reveal]`). Robust by
     design: content is only hidden once `html.js` is set, so it can never be trapped.
     (We removed GSAP ScrollTrigger because its position math broke on layout shift.)
-  - `motion.ts` — Lenis + hero intro + marquee. `chrome.ts` — menu + back-to-top.
+  - `motion.ts` — Lenis + hero intro (incl. one-time lime scanline) + marquee.
+    `chrome.ts` — menu + back-to-top. `magnetic.ts` — `[data-magnetic]` lean-to-cursor.
+  - `scroll.ts` — scroll accents: lime tick on the centered section, and the ME
+    inversion curtain (drives `--me-p`; a paper cover retracts up as ME centers so the
+    paper→ink flip is a designed wipe, not a jump-cut).
   - `artgen.ts` — generative monochrome art (project fallback + portrait fallback).
 - `src/styles/` — `base.css` (tokens, cursor, grain, reveals), `layout.css` (nav,
   menu, footer), `components.css` (hero, me, directions, overlay).
