@@ -27,7 +27,7 @@ float noise(vec2 p){
 }
 float fbm(vec2 p){
   float v=0.0, a=0.5;
-  for(int i=0;i<4;i++){ v+=a*noise(p); p*=2.0; a*=0.5; }
+  for(int i=0;i<5;i++){ v+=a*noise(p); p*=2.0; a*=0.5; }
   return v;
 }
 
@@ -37,28 +37,38 @@ void main(){
   vec2 p = uv * asp;
   vec2 m = (u_mouse / u_res) * asp;
 
-  // slow drifting density field, biased so the centre stays open for type
-  float d = fbm(p*2.2 + vec2(u_time*0.02, -u_time*0.015));
-  d = 0.35 + d*0.4;
+  // two flowing octaves drifting in different directions — visibly alive
+  float flow = fbm(p*2.4 + vec2(u_time*0.06, u_time*0.045));
+  flow += 0.5 * fbm(p*4.3 - vec2(u_time*0.035, u_time*0.05));
+  float d = 0.28 + flow*0.42;
 
-  // fade density toward the centre so the wordmark reads clean
-  float centre = distance(p, asp*0.5);
-  d *= smoothstep(0.15, 0.95, centre);
+  // slow breathing wave across the field
+  d += 0.06 * sin(p.x*3.0 - p.y*2.0 + u_time*0.5);
 
-  // whisper of cursor lift
+  // --- cursor interaction ---
   float md = distance(p, m);
-  d += 0.12 * exp(-md*md*7.0);
+  // ripples radiating out from the pointer
+  d += 0.20 * sin(md*34.0 - u_time*3.4) * exp(-md*4.2);
+  // local swell of ink right under the pointer
+  d += 0.34 * exp(-md*md*11.0);
 
-  // halftone: dot radius from density on a fixed grid
+  // keep it quiet at the centre (wordmark) AND the far edges (corner labels)
+  float rc = distance(p, asp*0.5);
+  float band = smoothstep(0.10, 0.44, rc) * (1.0 - smoothstep(0.72, 1.18, rc));
+  d *= band;
+
+  d = clamp(d, 0.0, 1.0) * u_fade;
+
+  // halftone dots on a fixed grid
   float grid = 5.0;
   vec2 cell = fract(gl_FragCoord.xy/grid) - 0.5;
   float dot = length(cell);
-  float radius = d * 0.5 * u_fade;
-  float ink = smoothstep(radius, radius-0.14, dot);
+  float radius = d * 0.62;
+  float ink = smoothstep(radius, radius-0.15, dot);
 
-  // paper #f4f2ed -> ink #0b0b0b, kept light so text stays legible over it
+  // paper #f4f2ed -> ink #0b0b0b; ink kept moderate so text stays legible
   vec3 paper = vec3(0.957,0.949,0.929);
-  vec3 col = mix(paper, vec3(0.043), ink*0.34);
+  vec3 col = mix(paper, vec3(0.043), ink*0.46);
 
   gl_FragColor = vec4(col, 1.0);
 }
@@ -140,8 +150,8 @@ export function initHalftone(canvas: HTMLCanvasElement): void {
     raf = 0;
     if (!visible || document.hidden) return;
     fade = Math.min(1, fade + 0.02);
-    smx += (mx - smx) * 0.06;
-    smy += (my - smy) * 0.06;
+    smx += (mx - smx) * 0.14;
+    smy += (my - smy) * 0.14;
 
     gl!.uniform2f(uRes, canvas.width, canvas.height);
     gl!.uniform1f(uTime, REDUCED_MOTION ? 8 : (now - start) / 1000);

@@ -1,15 +1,14 @@
 /**
  * Single source of truth for everything editable on the site.
- * Two destinations: ME and DIRECTIONS (tools / art / recent).
- * All copy below is intentional placeholder — swap it here, the
- * design never needs to be touched.
+ * Two destinations: ME and DIRECTIONS (recent / art).
+ * Swap copy and image paths here — the design never needs touching.
  */
 
 export const identity = {
-  name: 'ARNIBYTE',
-  wordmark: 'arnibyte',
+  name: 'ARNI',
+  wordmark: 'arni',
   role: 'Designer & maker',
-  email: 'hello@arnibyte.work',
+  email: 'hello@arni.work',
   available: 'Open for work — 2026',
   socials: [
     { label: 'Instagram', href: '#' },
@@ -18,10 +17,11 @@ export const identity = {
   ],
 };
 
-/** the ME section — a short bio + a pull-quote, all placeholder */
+/** the ME section — a short bio + a pull-quote + portrait */
 export const me = {
   lead: 'A short paragraph about you goes here — who you are, what you make, and how you think about the work. Two or three sentences, no more. Replace this when you send me your bio.',
   quote: 'Everything unnecessary, removed.',
+  portrait: '/me.png',
   facts: [
     { k: 'Based in', v: 'Somewhere' },
     { k: 'Working since', v: '20—' },
@@ -35,14 +35,14 @@ export interface DirectionItem {
   meta: string;
   note: string;
   seed: number;
-  /** optional real screenshot in /public/projects; falls back to generative art */
+  /** real screenshot in /public/projects; falls back to generative art */
   image?: string;
   /** optional live link — adds a "Visit ↗" action in the overlay */
   link?: string;
 }
 
 export interface Direction {
-  key: 'tools' | 'art' | 'recent';
+  key: 'recent' | 'art';
   label: string;
   caption: string;
   items: DirectionItem[];
@@ -50,13 +50,26 @@ export interface Direction {
 
 export const directions: Direction[] = [
   {
-    key: 'tools',
-    label: 'Tools',
-    caption: 'The instruments and systems I build with.',
+    key: 'recent',
+    label: 'Recent',
+    caption: 'The latest things, freshly made.',
     items: [
-      { title: 'The Grid', meta: 'System', note: 'A layout language I return to. Placeholder — replace with a real tool.', seed: 12 },
-      { title: 'Type Set', meta: 'Method', note: 'How I pair and scale faces. Placeholder — replace with a real tool.', seed: 31 },
-      { title: 'Ink & Paper', meta: 'Material', note: 'Working strictly in monochrome. Placeholder — replace with a real tool.', seed: 47 },
+      {
+        title: 'Weaver',
+        meta: 'Web · Audio tool · 2026',
+        note: 'A browser-based sound-design studio — sequence beats, design and mix your own sounds, and let it auto-mix between tracks. No installs; it all runs in the browser.',
+        seed: 21,
+        image: '/projects/weaver.png',
+        link: 'https://weaver-vert.vercel.app/',
+      },
+      {
+        title: 'Reflect',
+        meta: 'Web · Image tool · 2026',
+        note: 'A browser-based image-effects console — run any photo through dithering, halftone, ASCII, glitch and more to make something striking, then export. Real-time, 100% in the browser.',
+        seed: 55,
+        image: '/projects/reflect.png',
+        link: 'https://reflect-gamma-one.vercel.app/',
+      },
     ],
   },
   {
@@ -67,29 +80,6 @@ export const directions: Direction[] = [
       { title: 'Study No. 1', meta: 'Print', note: 'A quiet composition. Placeholder — replace with a real piece.', seed: 63 },
       { title: 'Untitled', meta: 'Drawing', note: 'Line and negative space. Placeholder — replace with a real piece.', seed: 78 },
       { title: 'Field', meta: 'Generative', note: 'Grown from a single seed. Placeholder — replace with a real piece.', seed: 90 },
-    ],
-  },
-  {
-    key: 'recent',
-    label: 'Recent',
-    caption: 'The latest things, freshly made.',
-    items: [
-      {
-        title: 'Weaver',
-        meta: 'Web · 2026',
-        note: 'A live web experience. Short one-line description of Weaver goes here — tell me what it does and I will finalise it.',
-        seed: 21,
-        image: '/projects/weaver.jpg',
-        link: 'https://weaver-vert.vercel.app/',
-      },
-      {
-        title: 'Reflect',
-        meta: 'Web · 2026',
-        note: 'A live web experience. Short one-line description of Reflect goes here — tell me what it does and I will finalise it.',
-        seed: 55,
-        image: '/projects/reflect.jpg',
-        link: 'https://reflect-gamma-one.vercel.app/',
-      },
     ],
   },
 ];

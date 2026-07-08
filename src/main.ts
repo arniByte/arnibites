@@ -7,6 +7,7 @@ import './styles/base.css';
 import './styles/layout.css';
 import './styles/components.css';
 
+import { me } from './content';
 import { drawPortraitHalftone } from './modules/artgen';
 import { initBackToTop, initMenu } from './modules/chrome';
 import { initCursor } from './modules/cursor';
@@ -23,9 +24,18 @@ renderMe();
 renderDirections();
 renderSocials();
 
-// generative portrait placeholder (no image assets)
+// portrait: real photo over a generative halftone fallback
 const portrait = document.getElementById('portrait') as HTMLCanvasElement | null;
 if (portrait) drawPortraitHalftone(portrait);
+const portraitImg = document.getElementById('portrait-img') as HTMLImageElement | null;
+if (portraitImg && me.portrait) {
+  portraitImg.onload = () => {
+    portraitImg.classList.add('is-loaded');
+    if (portrait) portrait.style.display = 'none'; // drop the fallback halftone
+  };
+  portraitImg.onerror = () => portraitImg.removeAttribute('src');
+  portraitImg.src = me.portrait;
+}
 
 // systems
 const lenis = initLenis();

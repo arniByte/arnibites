@@ -61,14 +61,17 @@
   pointer-events: none;
 }
 
+/* corner labels sit over the live halftone — near-ink + a paper halo keep
+   them crisp without a solid backdrop */
 .hero__eyebrow {
   position: relative;
   z-index: 2;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: var(--ash-d);
+  color: var(--ink);
+  text-shadow: 0 0 10px var(--paper), 0 0 4px var(--paper);
   margin-bottom: clamp(18px, 3vh, 34px);
 }
 
@@ -106,7 +109,8 @@
   font-size: clamp(16px, 1.5vw, 20px);
   font-style: italic;
   line-height: 1.45;
-  color: var(--ink-2);
+  color: var(--ink);
+  text-shadow: 0 0 10px var(--paper), 0 0 4px var(--paper);
 }
 
 .hero__scroll {
@@ -114,9 +118,11 @@
   align-items: center;
   gap: 12px;
   font-size: 13px;
+  font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--ash-d);
+  color: var(--ink);
+  text-shadow: 0 0 10px var(--paper), 0 0 4px var(--paper);
 }
 
 .hero__scroll i {
@@ -386,8 +392,29 @@
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  filter: grayscale(1) contrast(1.03);
+  /* real screenshots keep their colour — they're windows into the work */
+  filter: contrast(1.02);
   transition: opacity 0.55s var(--ease);
+}
+
+.media img.is-loaded {
+  opacity: 1;
+}
+
+/* portrait: line-art photo shown whole on a clean white card */
+.portrait__media {
+  background: #fff;
+  aspect-ratio: 1 / 1;
+}
+
+.portrait__media canvas {
+  height: 100%;
+  object-fit: cover;
+}
+
+.portrait__media img {
+  object-fit: contain;
+  filter: none;
 }
 
 .media img.is-loaded {

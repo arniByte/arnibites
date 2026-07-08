@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ARNIBYTE — Portfolio</title>
+    <title>ARNI — Portfolio</title>
     <meta
       name="description"
-      content="ARNIBYTE — designer & maker. A portfolio kept as a piece of art: quiet, monochrome, made by hand."
+      content="ARNI — designer & maker. A portfolio kept as a piece of art: quiet, monochrome, made by hand."
     />
-    <meta property="og:title" content="ARNIBYTE — Portfolio" />
+    <meta property="og:title" content="ARNI — Portfolio" />
     <meta property="og:description" content="A portfolio kept as a piece of art." />
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#f4f2ed" />
@@ -24,13 +24,13 @@
 
     <!-- preloader: a single hairline draws, then the paper lifts -->
     <div class="preloader" id="preloader" aria-hidden="true">
-      <div class="preloader__mark" id="preloader-mark">arnibyte</div>
+      <div class="preloader__mark" id="preloader-mark">arni</div>
       <div class="preloader__line"><span id="preloader-fill"></span></div>
     </div>
 
     <!-- header -->
     <header class="nav" id="nav">
-      <a class="nav__brand" href="#top">ARNIBYTE</a>
+      <a class="nav__brand" href="#top">ARNI</a>
       <nav class="nav__links" aria-label="Primary">
         <a href="#me" data-nav data-magnetic="0.4">Me</a>
         <a href="#directions" data-nav data-magnetic="0.4">Directions</a>
@@ -59,8 +59,8 @@
       <section class="hero" id="top" aria-label="Index">
         <canvas class="hero__halftone" id="halftone" aria-hidden="true"></canvas>
         <p class="hero__eyebrow" id="hero-eyebrow">Portfolio — Volume One</p>
-        <h1 class="hero__word" aria-label="arnibyte">
-          <span class="hero__word-inner" id="hero-word">arnibyte</span>
+        <h1 class="hero__word" aria-label="arni">
+          <span class="hero__word-inner" id="hero-word">arni</span>
         </h1>
         <div class="hero__foot">
           <p class="hero__tag">A portfolio kept as a piece of art — quiet, monochrome, made by hand.</p>
@@ -81,8 +81,11 @@
           </div>
           <aside class="me__side" data-reveal style="--reveal-delay: 0.15s">
             <figure class="portrait">
-              <canvas id="portrait" width="520" height="660" aria-label="Portrait placeholder"></canvas>
-              <figcaption>Portrait — pending upload</figcaption>
+              <div class="portrait__media media">
+                <canvas id="portrait" width="520" height="660" aria-label="Portrait"></canvas>
+                <img id="portrait-img" alt="Portrait of Arni" />
+              </div>
+              <figcaption id="portrait-cap">Portrait</figcaption>
             </figure>
             <dl class="facts" id="me-facts"></dl>
           </aside>
@@ -100,14 +103,13 @@
       <section class="dir section" id="directions" aria-label="Directions">
         <header class="dir__head">
           <p class="section__label">02 — Directions</p>
-          <h2 class="dir__title" data-reveal><em>Tools</em>, art &amp; recent things.</h2>
+          <h2 class="dir__title" data-reveal><em>Recent</em> work &amp; art.</h2>
         </header>
 
         <div class="dir__filters" id="dir-filters" data-reveal role="tablist" aria-label="Filter directions">
           <button class="dir__filter is-active" data-filter="all" data-magnetic="0.25" role="tab" aria-selected="true">All</button>
-          <button class="dir__filter" data-filter="tools" data-magnetic="0.25" role="tab" aria-selected="false">Tools</button>
-          <button class="dir__filter" data-filter="art" data-magnetic="0.25" role="tab" aria-selected="false">Art</button>
           <button class="dir__filter" data-filter="recent" data-magnetic="0.25" role="tab" aria-selected="false">Recent</button>
+          <button class="dir__filter" data-filter="art" data-magnetic="0.25" role="tab" aria-selected="false">Art</button>
         </div>
 
         <div class="dir__groups" id="dir-groups"></div>
