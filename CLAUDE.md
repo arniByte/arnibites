@@ -57,14 +57,18 @@ tools. Kept as "a piece of art": quiet, monochrome, calligraphic.
 - `public/projects/*.png`, `public/me.png` — real images, referenced by path from
   `content.ts` (with generative fallback if a file is missing).
 
-## Adding a project
+## Adding a project / artwork
 Add an item to a group in `directions.ts` inside `content.ts`: `{ title, meta, note,
-seed, image: '/projects/foo.png', link }`. Drop the screenshot in `public/projects/`.
-Images are shown whole (`object-fit: contain`) on an ink backdrop.
+seed, image, link }`. Drop the asset in `public/projects/` or `public/art/`.
+- **Recent** uses `layout: 'list'` (editorial text rows; screenshots shown whole,
+  `object-fit: contain`, on an ink backdrop, colour blooming on intent).
+- **Art** uses `layout: 'gallery'` — a masonry of image tiles with museum labels,
+  shown in full colour and **sorted by colour**. Clicking any tile opens the overlay.
 
 ## Current state (2026-07)
 - Two real projects live in **Recent**: Weaver (browser sound-design studio),
-  Reflect (browser image-effects console). **Art** holds placeholders.
+  Reflect (browser image-effects console). **Art** is a colour-sorted gallery of
+  five real pieces (`public/art/*.webp`).
 - Name shortened to **ARNI** / wordmark `arni`. Sections: **Recent** + **Art** only.
 - Deploy: GitHub Actions → Pages (`.github/workflows/deploy-pages.yml`), triggers on
   this branch + `main`. Vercel import also works.

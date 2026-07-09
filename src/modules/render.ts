@@ -29,21 +29,42 @@ export function renderDirections(): void {
         <h3 class="dir__group-name"><em>${d.label}</em></h3>
         <p class="dir__group-note">${d.caption}</p>
       </div>
-      <div class="dir__items">
-        ${d.items
-          .map(
-            (it, i) => `
-          <button class="item-row" data-group="${d.key}" data-seed="${it.seed}" data-cursor="Open" data-reveal style="--reveal-delay: ${(i * 0.06).toFixed(2)}s" aria-haspopup="dialog">
-            <span class="item-row__title">${it.title}</span>
-            <span class="item-row__meta">${it.meta}</span>
-            <span class="item-row__arrow" aria-hidden="true">↗</span>
-          </button>`,
-          )
-          .join('')}
-      </div>
+      ${d.layout === 'gallery' ? renderGallery(d.items) : renderList(d.key, d.items)}
     </section>`,
     )
     .join('');
+}
+
+function renderList(key: string, items: typeof directions[number]['items']): string {
+  return `<div class="dir__items">
+    ${items
+      .map(
+        (it, i) => `
+      <button class="item-row" data-group="${key}" data-seed="${it.seed}" data-cursor="Open" data-reveal style="--reveal-delay: ${(i * 0.06).toFixed(2)}s" aria-haspopup="dialog">
+        <span class="item-row__title">${it.title}</span>
+        <span class="item-row__meta">${it.meta}</span>
+        <span class="item-row__arrow" aria-hidden="true">↗</span>
+      </button>`,
+      )
+      .join('')}
+  </div>`;
+}
+
+function renderGallery(items: typeof directions[number]['items']): string {
+  return `<div class="dir__gallery">
+    ${items
+      .map(
+        (it, i) => `
+      <button class="art-tile" data-seed="${it.seed}" data-cursor="View" data-reveal style="--reveal-delay: ${(i * 0.07).toFixed(2)}s" aria-haspopup="dialog" aria-label="${it.title}, ${it.meta}">
+        <span class="art-tile__frame"><img src="${it.image}" alt="${it.title}" loading="lazy" /></span>
+        <span class="art-tile__cap">
+          <span class="art-tile__title">${it.title}</span>
+          <span class="art-tile__meta">${it.meta}</span>
+        </span>
+      </button>`,
+      )
+      .join('')}
+  </div>`;
 }
 
 export function renderSocials(): void {

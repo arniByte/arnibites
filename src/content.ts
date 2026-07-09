@@ -46,6 +46,8 @@ export interface Direction {
   key: 'recent' | 'art';
   label: string;
   caption: string;
+  /** 'list' = editorial text rows (default); 'gallery' = image grid */
+  layout?: 'list' | 'gallery';
   items: DirectionItem[];
 }
 
@@ -76,11 +78,14 @@ export const directions: Direction[] = [
   {
     key: 'art',
     label: 'Art',
-    caption: 'Personal and commissioned pieces.',
+    caption: 'Personal pieces — arranged by colour.',
+    layout: 'gallery',
     items: [
-      { title: 'Study No. 1', meta: 'Print', note: 'A quiet composition. Placeholder — replace with a real piece.', seed: 63 },
-      { title: 'Untitled', meta: 'Drawing', note: 'Line and negative space. Placeholder — replace with a real piece.', seed: 78 },
-      { title: 'Field', meta: 'Generative', note: 'Grown from a single seed. Placeholder — replace with a real piece.', seed: 90 },
+      { title: 'Revenant', meta: 'Digital · 2024', note: 'A figure dissolving into grain and light. Placeholder note — edit in content.ts.', seed: 101, image: '/art/revenant.webp' },
+      { title: 'Effigy', meta: 'Painting · 2023', note: 'A totem of blues and ash against a bare wall. Placeholder note — edit in content.ts.', seed: 102, image: '/art/effigy.webp' },
+      { title: 'Ascension', meta: 'Digital · 2024', note: 'A body turning toward the light. Placeholder note — edit in content.ts.', seed: 103, image: '/art/ascension.webp' },
+      { title: 'Threshold', meta: 'Digital · 2025', note: 'Chrome, touch, and the moment before waking. Placeholder note — edit in content.ts.', seed: 104, image: '/art/threshold.webp' },
+      { title: 'Thornbloom', meta: '3D · 2025', note: 'A chrome rose grown on a spine of thorns. Placeholder note — edit in content.ts.', seed: 105, image: '/art/thornbloom.webp' },
     ],
   },
 ];
