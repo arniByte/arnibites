@@ -238,6 +238,25 @@
   clip-path: inset(0 0 calc(var(--me-p, 1) * 100%) 0);
 }
 
+/* the ink's rising edge glows lime as the paper retracts — a designed wipe */
+.me__edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc((1 - var(--me-p, 1)) * 100%);
+  height: 2px;
+  z-index: 4;
+  background: var(--lime);
+  box-shadow: 0 0 34px 6px rgba(198, 242, 74, 0.55);
+  opacity: var(--me-edge-op, 0);
+  pointer-events: none;
+}
+
+/* content rises into place as the ink floods up — not a static reveal */
+.me__grid {
+  transform: translateY(calc((1 - var(--me-p, 1)) * 48px));
+}
+
 .me__grid {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.9fr);
@@ -624,41 +643,45 @@
   transform: scaleX(1);
 }
 
-.contact__cta em {
-  transition: color 0.35s var(--ease);
-}
-
-/* the grey 'hello' warms toward lime when you reach for the contact links */
-.contact:has(.contact__row a:hover) .contact__cta em {
-  color: var(--lime-deep);
-}
-
 .contact__cta {
   display: block;
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: clamp(76px, 20vw, 300px);
-  line-height: 0.86;
-  letter-spacing: -0.03em;
   margin: auto 0;
+  max-width: 100%;
 }
 
-.contact__cta-line {
-  display: block;
-  overflow: hidden;
+/* the calligraphic close — one script accent (Ephesis) */
+.contact__cta-script {
+  display: inline-block;
+  font-family: 'Ephesis', var(--serif);
+  font-weight: 400;
+  font-size: clamp(96px, 21vw, 320px);
+  line-height: 1.02;
+  letter-spacing: 0;
+  color: var(--ink);
+  padding: 0 0.14em 0.16em 0.02em;
+  transition: color 0.4s var(--ease);
 }
 
-.contact__cta-line em {
-  font-variation-settings: 'SOFT' 50, 'WONK' 1, 'opsz' 144;
-  transition: opacity 0.4s;
+/* it writes itself in, left → right, as CONTACT centers */
+html.js .contact__cta-script {
+  clip-path: inset(0 106% -16% -6%);
+  transition: clip-path 1.35s var(--ease-inout), color 0.4s var(--ease);
 }
 
-.contact__cta:hover em {
-  opacity: 0.55;
+html.js .contact.is-current .contact__cta-script {
+  clip-path: inset(0 -6% -16% -6%);
 }
 
-.contact__cta-line:nth-child(2) {
-  padding-left: clamp(40px, 12vw, 240px);
+@media (prefers-reduced-motion: reduce) {
+  html.js .contact__cta-script {
+    clip-path: none;
+  }
+}
+
+/* warms toward lime on hover of the CTA or the contact links */
+.contact__cta:hover .contact__cta-script,
+.contact:has(.contact__row a:hover) .contact__cta-script {
+  color: var(--lime-deep);
 }
 
 .contact__row {

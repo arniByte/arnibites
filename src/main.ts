@@ -1,6 +1,8 @@
-/* fonts — self-hosted, no external requests. One voice: Fraunces. */
+/* fonts — self-hosted, no external requests. Fraunces is the voice;
+   Ephesis is a single calligraphic accent, used only for the contact CTA. */
 import '@fontsource-variable/fraunces/full.css';
 import '@fontsource-variable/fraunces/full-italic.css';
+import '@fontsource/ephesis/400.css';
 
 /* styles */
 import './styles/base.css';
@@ -52,7 +54,7 @@ if (halftone) initHalftone(halftone);
 // scroll-in reveals (IntersectionObserver) + marquee + scroll accents
 initReveals();
 initMarquee();
-initScrollAccents(lenis);
+initScrollAccents();
 
 // choreography: hide hero, preload, then play the entrance
 const playHero = prepareHeroIntro();

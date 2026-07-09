@@ -23,7 +23,9 @@ tools. Kept as "a piece of art": quiet, monochrome, calligraphic.
   so monochrome stays the resting state. Do not add other hues to the chrome. Real
   project screenshots default to a grayscale duotone and bloom to true colour on intent.
 - **One type voice**: Fraunces Variable, leaning on its italic + SOFT/WONK axes
-  (`--wonk` token). No second display face.
+  (`--wonk` token). The only exception is **Ephesis**, a calligraphic script used
+  for the single contact CTA ("Connect me"), which writes itself in and links to
+  Telegram. No other display faces.
 - Figure/ground inversion for rhythm: paper hero → ink ME plate → paper Directions.
 - Motion is restrained + smooth. Everything must degrade under
   `prefers-reduced-motion` (all reveals become visible; no animation).
