@@ -10,9 +10,10 @@ export const identity = {
   role: 'Designer & maker',
   email: 'hello@arni.work',
   available: 'Open for work — 2026',
+  telegram: 'https://t.me/fucketh',
   socials: [
+    { label: 'Telegram', href: 'https://t.me/fucketh' },
     { label: 'Instagram', href: '#' },
-    { label: 'Behance', href: '#' },
     { label: 'Are.na', href: '#' },
   ],
 };

@@ -54,7 +54,7 @@ void main(){
 
   // keep it quiet at the centre (wordmark) AND the far edges (corner labels)
   float rc = distance(p, asp*0.5);
-  float band = smoothstep(0.10, 0.44, rc) * (1.0 - smoothstep(0.72, 1.18, rc));
+  float band = smoothstep(0.05, 0.28, rc) * (1.0 - smoothstep(0.72, 1.18, rc));
   d *= band;
 
   d = clamp(d, 0.0, 1.0) * u_fade;
