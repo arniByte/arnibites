@@ -37,7 +37,11 @@ tools. Kept as "a piece of art": quiet, monochrome, calligraphic.
 - `src/main.ts` — wires everything up.
 - `src/modules/`:
   - `halftone.ts` — WebGL living halftone hero (flowing field + cursor ripple/swell),
-    kept quiet at centre (wordmark) and edges (corner labels).
+    kept quiet at centre (wordmark) and edges (corner labels). Renders 1:1 with device
+    pixels (DPR-capped at 2) with anti-aliased, size-jittered dots — do not go back to
+    downscaled rendering, it looks chunky.
+  - `scroll.ts` also runs the gallery parallax: `.art-tile`s drift at column-varied
+    speeds on scroll (their reveal is fade-only so the parallax owns transform).
   - `cursor.ts` — lime dot + trailing ring (GSAP quickTo); hidden on touch.
   - `magnetic.ts` — `[data-magnetic]` elements lean toward the pointer.
   - `directions.ts` — filter chips, cursor-follow preview, detail overlay. `setMedia()`
@@ -76,7 +80,10 @@ seed, image, link }`. Drop the asset in `public/projects/` or `public/art/`.
 - Deploy: GitHub Actions → Pages (`.github/workflows/deploy-pages.yml`), triggers on
   this branch + `main`. Vercel import also works.
 
+## Contact & socials
+Only two destinations, by request: **Telegram** (t.me/fucketh — also the target of the
+calligraphic "Connect with me" CTA) and **Instagram** (@arniatplay). No email anywhere.
+
 ## Next steps / TODO
 - Replace the **bio** (`me.lead`) and **Art** placeholders with real content when Arni sends them.
 - Portrait is currently a placeholder line-art image; swap for a real photo if desired.
-- Confirm the real contact email (currently `hello@arni.work`).

@@ -589,6 +589,14 @@
   margin: 0 0 clamp(18px, 2.4vw, 34px);
   text-align: left;
   background: transparent;
+  will-change: transform;
+}
+
+/* tiles fade in only — their transform belongs to the living parallax */
+html.js .art-tile[data-reveal] {
+  transform: none;
+  transition: opacity 0.9s var(--ease);
+  transition-delay: var(--reveal-delay, 0s);
 }
 
 .art-tile__frame {
@@ -596,24 +604,26 @@
   overflow: hidden;
   background: var(--ink);
   border: 1px solid var(--line);
-  transition: border-color 0.4s var(--ease);
+  transition: border-color 0.4s var(--ease), box-shadow 0.5s var(--ease);
 }
 
 .art-tile img {
   display: block;
   width: 100%;
   height: auto;
-  transition: transform 0.8s var(--ease);
+  transition: transform 0.8s var(--ease), filter 0.6s var(--ease);
 }
 
 .art-tile:hover .art-tile__frame,
 .art-tile:focus-visible .art-tile__frame {
   border-color: var(--lime-deep);
+  box-shadow: 0 18px 44px -18px rgba(11, 11, 11, 0.45);
 }
 
 .art-tile:hover img,
 .art-tile:focus-visible img {
-  transform: scale(1.045);
+  transform: scale(1.05);
+  filter: saturate(1.12) contrast(1.03);
 }
 
 /* museum label under each piece */
@@ -787,13 +797,21 @@ html.js .contact.is-current .contact__cta-script {
 .contact__socials {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 30px;
+  gap: 16px 56px;
 }
 
+/* only two destinations remain — give them real presence */
 .contact__socials a {
   position: relative;
-  font-size: 14px;
-  letter-spacing: 0.06em;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(20px, 2.4vw, 32px);
+  letter-spacing: 0.01em;
+  transition: color 0.3s var(--ease);
+}
+
+.contact__socials a:hover {
+  color: var(--lime-deep);
 }
 
 /* --- overlay --------------------------------------------------------- */
