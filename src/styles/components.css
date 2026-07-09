@@ -922,6 +922,31 @@ body.overlay-open .overlay {
   opacity: 0.5;
 }
 
+/* extra screenshots, stacked below (full colour, scroll to reveal) */
+.overlay__more {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 3vh, 32px);
+  margin-top: clamp(28px, 5vh, 60px);
+}
+
+.overlay__more:empty {
+  display: none;
+  margin: 0;
+}
+
+.overlay__shot {
+  border: 1px solid var(--line);
+  background: var(--ink);
+  overflow: hidden;
+}
+
+.overlay__shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* --- responsive ------------------------------------------------------ */
 
 @media (max-width: 860px) {

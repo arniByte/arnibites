@@ -38,6 +38,8 @@ export interface DirectionItem {
   seed: number;
   /** real screenshot in /public/projects; falls back to generative art */
   image?: string;
+  /** extra screenshots shown stacked in the overlay (scroll to see) */
+  extra?: string[];
   /** optional live link — adds a "Visit ↗" action in the overlay */
   link?: string;
 }
@@ -72,6 +74,15 @@ export const directions: Direction[] = [
         seed: 55,
         image: '/projects/reflect.png',
         link: 'https://reflect-gamma-one.vercel.app/',
+      },
+      {
+        title: 'Sokotoma',
+        meta: 'Web · Generative · 2026',
+        note: 'A browser playground of small instruments — turn any word into a deterministic signal, watch sound become light, test your reflexes. A life, rendered as data.',
+        seed: 33,
+        image: '/projects/sokotoma-cipher.png',
+        extra: ['/projects/sokotoma-signal.png'],
+        link: 'https://sokotoma.vercel.app/',
       },
     ],
   },
