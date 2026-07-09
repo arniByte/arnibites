@@ -307,10 +307,10 @@ function initOverlay(lenis: Lenis | null): void {
   });
 
   dirGroups?.addEventListener('click', (e) => {
-    const row = (e.target as HTMLElement).closest<HTMLElement>('.item-row');
-    if (!row) return;
-    const i = flat.findIndex((f) => f.seed === Number(row.dataset.seed));
-    if (i >= 0) show(i, row);
+    const el = (e.target as HTMLElement).closest<HTMLElement>('.item-row, .art-tile');
+    if (!el) return;
+    const i = flat.findIndex((f) => f.seed === Number(el.dataset.seed));
+    if (i >= 0) show(i, el);
   });
 
   closeBtn.addEventListener('click', hide);
