@@ -17,6 +17,7 @@ interface FlatItem {
   note: string;
   seed: number;
   image?: string;
+  extra?: string[];
   link?: string;
 }
 
@@ -200,6 +201,7 @@ function initOverlay(lenis: Lenis | null): void {
   const media = document.getElementById('overlay-media');
   const canvas = document.getElementById('overlay-canvas') as HTMLCanvasElement | null;
   const img = document.getElementById('overlay-img') as HTMLImageElement | null;
+  const moreEl = document.getElementById('overlay-more');
   const titleEl = document.getElementById('overlay-title');
   const kickerEl = document.getElementById('overlay-kicker');
   const metaEl = document.getElementById('overlay-meta');
@@ -231,6 +233,12 @@ function initOverlay(lenis: Lenis | null): void {
     setMedia(canvas, img, it);
     // the overlay is the payoff — the shot arrives already in full colour
     img.classList.toggle('is-colour', !!it.image);
+    // extra screenshots stack below (scroll to see)
+    if (moreEl) {
+      moreEl.innerHTML = (it.extra ?? [])
+        .map((src: string) => `<figure class="overlay__shot"><img src="${src}" alt="${it.title}" loading="lazy" /></figure>`)
+        .join('');
+    }
   };
 
   const show = (i: number, from?: HTMLElement): void => {

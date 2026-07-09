@@ -147,8 +147,8 @@
       <button class="footer__top" id="back-to-top" data-magnetic="0.4">Top</button>
     </footer>
 
-    <!-- item detail overlay -->
-    <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="overlay-title">
+    <!-- item detail overlay (data-lenis-prevent lets it scroll natively) -->
+    <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="overlay-title" data-lenis-prevent>
       <div class="overlay__inner">
         <div class="overlay__head">
           <span id="overlay-kicker"></span>
@@ -169,6 +169,7 @@
             </div>
           </div>
         </div>
+        <div class="overlay__more" id="overlay-more"></div>
       </div>
     </div>
 

@@ -66,9 +66,12 @@ seed, image, link }`. Drop the asset in `public/projects/` or `public/art/`.
   shown in full colour and **sorted by colour**. Clicking any tile opens the overlay.
 
 ## Current state (2026-07)
-- Two real projects live in **Recent**: Weaver (browser sound-design studio),
-  Reflect (browser image-effects console). **Art** is a colour-sorted gallery of
+- Three real projects live in **Recent**: Weaver (sound-design studio), Reflect
+  (image-effects console), Sokotoma (generative playground — uses `extra: []` to
+  stack a second screenshot in the overlay). **Art** is a colour-sorted gallery of
   five real pieces (`public/art/*.webp`).
+- The detail overlay has `data-lenis-prevent` so it scrolls natively (Lenis would
+  otherwise hijack the wheel and the overlay wouldn't scroll).
 - Name shortened to **ARNI** / wordmark `arni`. Sections: **Recent** + **Art** only.
 - Deploy: GitHub Actions → Pages (`.github/workflows/deploy-pages.yml`), triggers on
   this branch + `main`. Vercel import also works.
