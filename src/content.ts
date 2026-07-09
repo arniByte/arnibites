@@ -8,13 +8,11 @@ export const identity = {
   name: 'ARNI',
   wordmark: 'arni',
   role: 'Designer & maker',
-  email: 'hello@arni.work',
   available: 'Open for work — 2026',
   telegram: 'https://t.me/fucketh',
   socials: [
     { label: 'Telegram', href: 'https://t.me/fucketh' },
-    { label: 'Instagram', href: '#' },
-    { label: 'Are.na', href: '#' },
+    { label: 'Instagram', href: 'https://www.instagram.com/arniatplay?igsh=MTM3eDBscGNoaXJocA==' },
   ],
 };
 

@@ -10,6 +10,31 @@ import { clamp, REDUCED_MOTION } from './utils';
 export function initScrollAccents(): void {
   initSectionMarkers();
   initMeCurtain();
+  initGalleryParallax();
+}
+
+/** the gallery breathes: each tile drifts at its own pace while scrolling */
+function initGalleryParallax(): void {
+  if (REDUCED_MOTION) return;
+  const tiles = [...document.querySelectorAll<HTMLElement>('.art-tile')];
+  if (!tiles.length) return;
+
+  const movers = tiles.map((tile, i) => ({
+    tile,
+    set: gsap.quickSetter(tile, 'y', 'px') as (v: number) => void,
+    // column-varied speeds so neighbours part as you scroll
+    factor: 0.03 + (i % 3) * 0.03,
+  }));
+
+  gsap.ticker.add(() => {
+    const vh = window.innerHeight || 1;
+    for (const m of movers) {
+      const r = m.tile.getBoundingClientRect();
+      if (r.width === 0 || r.bottom < -80 || r.top > vh + 80) continue;
+      const fromCentre = r.top + r.height / 2 - vh / 2;
+      m.set(-fromCentre * m.factor);
+    }
+  });
 }
 
 function initSectionMarkers(): void {

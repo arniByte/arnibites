@@ -2,7 +2,8 @@
  * Calm halftone atmosphere behind the hero (WebGL).
  * A slow monochrome dot field that breathes and drifts — ink on paper,
  * not a data readout. Faint cursor influence, no crosshair, no colour.
- * Rendered small and scaled up for a soft printed texture.
+ * Rendered at native device resolution with anti-aliased, size-jittered
+ * dots, so the print texture stays crisp on any screen.
  */
 import { REDUCED_MOTION } from './utils';
 
@@ -17,6 +18,7 @@ uniform vec2 u_res;
 uniform float u_time;
 uniform vec2 u_mouse;
 uniform float u_fade;
+uniform float u_grid;
 
 float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
 float noise(vec2 p){
@@ -27,7 +29,7 @@ float noise(vec2 p){
 }
 float fbm(vec2 p){
   float v=0.0, a=0.5;
-  for(int i=0;i<5;i++){ v+=a*noise(p); p*=2.0; a*=0.5; }
+  for(int i=0;i<4;i++){ v+=a*noise(p); p*=2.0; a*=0.5; }
   return v;
 }
 
@@ -59,12 +61,16 @@ void main(){
 
   d = clamp(d, 0.0, 1.0) * u_fade;
 
-  // halftone dots on a fixed grid
-  float grid = 5.0;
-  vec2 cell = fract(gl_FragCoord.xy/grid) - 0.5;
+  // halftone dots on a fixed grid, anti-aliased at device resolution
+  vec2 id = floor(gl_FragCoord.xy / u_grid);
+  vec2 cell = fract(gl_FragCoord.xy / u_grid) - 0.5;
   float dot = length(cell);
-  float radius = d * 0.62;
-  float ink = smoothstep(radius, radius-0.15, dot);
+  // slight per-dot size jitter so the print feels organic, not mechanical
+  float jitter = 0.86 + 0.28 * hash(id);
+  float radius = d * 0.62 * jitter;
+  // AA width = one device pixel, expressed in cell space
+  float aa = 1.0 / u_grid;
+  float ink = smoothstep(radius, radius - aa * 1.6, dot);
 
   // paper #f4f2ed -> ink #0b0b0b; ink kept moderate so text stays legible
   vec3 paper = vec3(0.957,0.949,0.929);
@@ -74,7 +80,10 @@ void main(){
 }
 `;
 
-const PIXEL = 2;
+// render 1:1 with device pixels (capped) — crisp dots, no chunky upscale
+const DPR = Math.min(window.devicePixelRatio || 1, 2);
+/** dot-cell size in CSS pixels */
+const CELL = 9;
 
 export function initHalftone(canvas: HTMLCanvasElement): void {
   const gl = canvas.getContext('webgl', { antialias: false, depth: false, alpha: false });
@@ -110,6 +119,7 @@ export function initHalftone(canvas: HTMLCanvasElement): void {
   const uTime = gl.getUniformLocation(prog, 'u_time');
   const uMouse = gl.getUniformLocation(prog, 'u_mouse');
   const uFade = gl.getUniformLocation(prog, 'u_fade');
+  const uGrid = gl.getUniformLocation(prog, 'u_grid');
 
   let mx = -9999;
   let my = -9999;
@@ -121,8 +131,8 @@ export function initHalftone(canvas: HTMLCanvasElement): void {
 
   const resize = (): void => {
     const rect = canvas.getBoundingClientRect();
-    canvas.width = Math.max(2, Math.floor(rect.width / PIXEL));
-    canvas.height = Math.max(2, Math.floor(rect.height / PIXEL));
+    canvas.width = Math.max(2, Math.floor(rect.width * DPR));
+    canvas.height = Math.max(2, Math.floor(rect.height * DPR));
     gl.viewport(0, 0, canvas.width, canvas.height);
   };
   resize();
@@ -130,8 +140,8 @@ export function initHalftone(canvas: HTMLCanvasElement): void {
 
   const setFromClient = (cx: number, cy: number): void => {
     const rect = canvas.getBoundingClientRect();
-    mx = (cx - rect.left) / PIXEL;
-    my = (rect.height - (cy - rect.top)) / PIXEL;
+    mx = (cx - rect.left) * DPR;
+    my = (rect.height - (cy - rect.top)) * DPR;
   };
 
   // pointer + touch: ripples follow the cursor on desktop and the finger on mobile
@@ -145,8 +155,8 @@ export function initHalftone(canvas: HTMLCanvasElement): void {
       (e) => {
         if (e.gamma == null || e.beta == null) return;
         const rect = canvas.getBoundingClientRect();
-        mx = (0.5 + Math.max(-1, Math.min(1, e.gamma / 45)) * 0.5) * (rect.width / PIXEL);
-        my = (0.5 + Math.max(-1, Math.min(1, (e.beta - 45) / 45)) * 0.5) * (rect.height / PIXEL);
+        mx = (0.5 + Math.max(-1, Math.min(1, e.gamma / 45)) * 0.5) * rect.width * DPR;
+        my = (0.5 + Math.max(-1, Math.min(1, (e.beta - 45) / 45)) * 0.5) * rect.height * DPR;
       },
       { passive: true },
     );
@@ -171,6 +181,7 @@ export function initHalftone(canvas: HTMLCanvasElement): void {
     gl!.uniform1f(uTime, REDUCED_MOTION ? 8 : (now - start) / 1000);
     gl!.uniform2f(uMouse, smx, smy);
     gl!.uniform1f(uFade, fade);
+    gl!.uniform1f(uGrid, CELL * DPR);
     gl!.drawArrays(gl!.TRIANGLES, 0, 3);
 
     if (!REDUCED_MOTION || fade < 1) raf = requestAnimationFrame(frame);
