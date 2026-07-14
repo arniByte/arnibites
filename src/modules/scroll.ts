@@ -13,6 +13,27 @@ export function initScrollAccents(): void {
   initGalleryParallax();
   initProgressLine();
   initFactsSettle();
+  initHeroExit();
+}
+
+/** the hero doesn't jump-cut away: the wordmark drifts down and dissolves
+    as you leave, handing over to the ME curtain wipe */
+function initHeroExit(): void {
+  if (REDUCED_MOTION) return;
+  const hero = document.querySelector<HTMLElement>('.hero');
+  // the outer h1 — the inner span belongs to the intro tween
+  const word = document.querySelector<HTMLElement>('.hero__word');
+  if (!hero || !word) return;
+
+  let last = -1;
+  gsap.ticker.add(() => {
+    const vh = window.innerHeight || 1;
+    const p = clamp(-hero.getBoundingClientRect().top / (vh * 0.85), 0, 1);
+    if (p === last) return;
+    last = p;
+    word.style.transform = `translateY(${(p * 12).toFixed(3)}vh)`;
+    word.style.opacity = (1 - p * 0.9).toFixed(3);
+  });
 }
 
 /** a 2px lime line along the top edge showing page progress */
@@ -74,7 +95,9 @@ function initFactsSettle(): void {
   io.observe(facts);
 }
 
-/** the gallery breathes: each tile drifts at its own pace while scrolling */
+/** the gallery breathes: each tile drifts at its own pace while scrolling.
+    Desktop-only — in the single-column mobile layout the drift would slide
+    tiles over their neighbours' labels. */
 function initGalleryParallax(): void {
   if (REDUCED_MOTION) return;
   const tiles = [...document.querySelectorAll<HTMLElement>('.art-tile')];
@@ -87,7 +110,18 @@ function initGalleryParallax(): void {
     factor: 0.03 + (i % 3) * 0.03,
   }));
 
+  const narrow = window.matchMedia('(max-width: 899px)');
+  let parked = false;
+
   gsap.ticker.add(() => {
+    if (narrow.matches) {
+      if (!parked) {
+        parked = true;
+        for (const m of movers) m.set(0);
+      }
+      return;
+    }
+    parked = false;
     const vh = window.innerHeight || 1;
     for (const m of movers) {
       const r = m.tile.getBoundingClientRect();

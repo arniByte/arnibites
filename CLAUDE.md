@@ -44,10 +44,15 @@ tools. Kept as "a piece of art": quiet, monochrome, calligraphic.
 - `src/modules/`:
   - `halftone.ts` — WebGL living halftone hero (flowing field + cursor ripple/swell),
     kept quiet at centre (wordmark) and edges (corner labels). Renders 1:1 with device
-    pixels (DPR-capped at 2) with anti-aliased, size-jittered dots — do not go back to
-    downscaled rendering, it looks chunky.
+    pixels (DPR-capped at 2 on desktop, 3 on <700px — phones are DPR-3 and upscaling
+    looks mushy) with anti-aliased, size-jittered dots — do not go back to downscaled
+    rendering, it looks chunky. Cell is 9px, 6.5px on <700px. A paper gradient scrim
+    (`.hero::before`) keeps the nav legible over the field.
   - `scroll.ts` also runs the gallery parallax: `.art-tile`s drift at column-varied
     speeds on scroll (their reveal is fade-only so the parallax owns transform).
+    Desktop-only (≥900px) — in the single-column mobile layout the drift slid tiles
+    over their neighbours' labels. It also drives the hero exit (wordmark drifts +
+    dissolves as you leave, pairing with the ME curtain).
   - `cursor.ts` — lime dot + trailing ring (GSAP quickTo); hidden on touch.
   - `magnetic.ts` — `[data-magnetic]` elements lean toward the pointer.
   - `directions.ts` — filter chips, cursor-follow preview, detail overlay. `setMedia()`
@@ -57,6 +62,8 @@ tools. Kept as "a piece of art": quiet, monochrome, calligraphic.
     design: content is only hidden once `html.js` is set, so it can never be trapped.
     (We removed GSAP ScrollTrigger because its position math broke on layout shift.)
   - `motion.ts` — Lenis + hero intro (incl. one-time lime scanline) + marquee.
+    In-page anchors glide (quint in-out, distance-aware duration, `force: true` so
+    they work mid menu-close) — never a teleport.
     `chrome.ts` — menu + back-to-top. `magnetic.ts` — `[data-magnetic]` lean-to-cursor.
   - `scroll.ts` — scroll accents: lime tick on the centered section, and the ME
     inversion curtain (drives `--me-p`; a paper cover retracts up as ME centers so the

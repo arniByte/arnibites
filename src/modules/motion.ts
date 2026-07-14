@@ -19,12 +19,23 @@ export function initLenis(): Lenis | null {
   gsap.ticker.add(raf);
   gsap.ticker.lagSmoothing(0);
 
+  // anchor travel is choreography, not teleport: an ease-in-out glide whose
+  // length breathes with the distance, so hero→ME reads as a designed wipe
+  const glide = (t: number): number =>
+    t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
+
   document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', (e) => {
       const target = a.getAttribute('href');
-      if (!target || target === '#' || !document.querySelector(target)) return;
+      const el = target && target !== '#' ? document.querySelector<HTMLElement>(target) : null;
+      if (!el) return;
       e.preventDefault();
-      lenis.scrollTo(target, { duration: 1.3 });
+      const dist = Math.abs(el.getBoundingClientRect().top);
+      lenis.scrollTo(el, {
+        duration: Math.min(2.1, Math.max(1.2, 0.9 + dist / 1500)),
+        easing: glide,
+        force: true, // works even mid menu-close, while Lenis is stopped
+      });
     });
   });
 

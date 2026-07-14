@@ -203,6 +203,21 @@ body.cursor-down .cursor {
   }
 }
 
+/* --- touch ----------------------------------------------------------- */
+
+/* no blue tap-flash boxes on Android/iOS; taps respond instantly */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a,
+button,
+.art-tile,
+.item-row {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 /* --- paper grain ---------------------------------------------------- */
 
 .grain {
