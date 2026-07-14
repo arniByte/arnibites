@@ -63,3 +63,11 @@ export function initBackToTop(lenis: Lenis | null): void {
     else window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
+
+/** the footer "Play" link travels to Directions AND activates the Play filter */
+export function initFooterPlay(): void {
+  document.getElementById('footer-play')?.addEventListener('click', () => {
+    const chip = document.querySelector<HTMLButtonElement>('.dir__filter[data-filter="play"]');
+    chip?.click();
+  });
+}

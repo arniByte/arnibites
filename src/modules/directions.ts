@@ -21,8 +21,9 @@ interface FlatItem {
   link?: string;
 }
 
+// the item overlay browses everything except the games (they have their own shell)
 const flat: FlatItem[] = directions.flatMap((d) =>
-  d.items.map((it) => ({ group: d.label, ...it })),
+  d.items.filter((it) => !it.game).map((it) => ({ group: d.label, ...it })),
 );
 
 /**
@@ -209,6 +210,7 @@ function initOverlay(lenis: Lenis | null): void {
   const visitEl = document.getElementById('overlay-visit') as HTMLAnchorElement | null;
   const closeBtn = document.getElementById('overlay-close');
   const nextBtn = document.getElementById('overlay-next');
+  const prevBtn = document.getElementById('overlay-prev');
   if (!overlay || !media || !canvas || !img || !titleEl || !closeBtn || !nextBtn) return;
 
   let current = -1;
@@ -315,23 +317,30 @@ function initOverlay(lenis: Lenis | null): void {
   });
 
   dirGroups?.addEventListener('click', (e) => {
-    const el = (e.target as HTMLElement).closest<HTMLElement>('.item-row, .art-tile');
+    const el = (e.target as HTMLElement).closest<HTMLElement>('.item-row, .art-tile:not(.play-tile)');
     if (!el) return;
     const i = flat.findIndex((f) => f.seed === Number(el.dataset.seed));
     if (i >= 0) show(i, el);
   });
 
+  const goNext = (): void => show((current + 1) % flat.length);
+  const goPrev = (): void => show((current - 1 + flat.length) % flat.length);
+
   closeBtn.addEventListener('click', hide);
-  nextBtn.addEventListener('click', () => show((current + 1) % flat.length));
+  nextBtn.addEventListener('click', goNext);
+  prevBtn?.addEventListener('click', goPrev);
 
   window.addEventListener('keydown', (e) => {
     if (!open) return;
     if (e.key === 'Escape') hide();
+    if (e.key === 'ArrowRight') goNext();
+    if (e.key === 'ArrowLeft') goPrev();
     if (e.key === 'Tab') {
       // trap focus across the visible controls (Visit only when shown)
       const focusables = [
         closeBtn,
         visitEl && !visitEl.hidden ? visitEl : null,
+        prevBtn,
         nextBtn,
       ].filter(Boolean) as HTMLElement[];
       const idx = focusables.indexOf(document.activeElement as HTMLElement);

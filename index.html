@@ -9,8 +9,10 @@
       content="ARNI — designer & maker. A portfolio kept as a piece of art: quiet, monochrome, made by hand."
     />
     <meta property="og:title" content="ARNI — Portfolio" />
-    <meta property="og:description" content="A portfolio kept as a piece of art." />
+    <meta property="og:description" content="A portfolio kept as a piece of art — work, art & small games set in ink." />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#f4f2ed" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <noscript>
@@ -62,7 +64,9 @@
         <div class="hero__scan" id="hero-scan" aria-hidden="true"></div>
         <p class="hero__eyebrow" id="hero-eyebrow">Portfolio — Volume One</p>
         <h1 class="hero__word" aria-label="arni">
-          <span class="hero__word-inner" id="hero-word">arni</span>
+          <span class="hero__word-inner" id="hero-word" aria-hidden="true"
+            ><span class="hero__letter">a</span><span class="hero__letter">r</span><span class="hero__letter">n</span><span class="hero__letter">i</span></span
+          >
         </h1>
         <div class="hero__foot">
           <p class="hero__tag">A portfolio kept as a piece of art — quiet, monochrome, made by hand.</p>
@@ -107,14 +111,16 @@
       <section class="dir section" id="directions" aria-label="Directions">
         <header class="dir__head">
           <p class="section__label">02 — Directions</p>
-          <h2 class="dir__title" data-reveal><em>Recent</em> work &amp; art.</h2>
+          <h2 class="dir__title" data-reveal><em>Recent</em> work, art &amp; play.</h2>
         </header>
 
         <div class="dir__filters" id="dir-filters" data-reveal role="tablist" aria-label="Filter directions">
           <button class="dir__filter is-active" data-filter="all" data-magnetic="0.25" role="tab" aria-selected="true">All</button>
           <button class="dir__filter" data-filter="recent" data-magnetic="0.25" role="tab" aria-selected="false">Recent</button>
           <button class="dir__filter" data-filter="art" data-magnetic="0.25" role="tab" aria-selected="false">Art</button>
+          <button class="dir__filter" data-filter="play" data-magnetic="0.25" role="tab" aria-selected="false">Play</button>
         </div>
+        <p class="dir__hint" data-reveal>Click any piece to open it — the games are playable.</p>
 
         <div class="dir__groups" id="dir-groups"></div>
 
@@ -141,7 +147,11 @@
 
     <footer class="footer">
       <span id="footer-name">ARNI</span>
-      <span>Portfolio — Volume One</span>
+      <nav class="footer__nav" aria-label="Footer">
+        <a href="#me">Me</a>
+        <a href="#directions">Directions</a>
+        <a href="#directions" id="footer-play">Play</a>
+      </nav>
       <span>©2026</span>
       <button class="footer__top" id="back-to-top" data-magnetic="0.4">Top</button>
     </footer>
@@ -164,11 +174,35 @@
             <p class="overlay__note" id="overlay-note"></p>
             <div class="overlay__actions">
               <a class="overlay__visit" id="overlay-visit" href="#" target="_blank" rel="noopener" hidden>Visit ↗</a>
-              <button class="overlay__next" id="overlay-next" data-magnetic="0.3">Next</button>
+              <button class="overlay__next" id="overlay-prev" data-magnetic="0.3" aria-label="Previous piece">← Prev</button>
+              <button class="overlay__next" id="overlay-next" data-magnetic="0.3" aria-label="Next piece">Next →</button>
             </div>
+            <p class="overlay__kbd">Esc closes · ←/→ browse</p>
           </div>
         </div>
         <div class="overlay__more" id="overlay-more"></div>
+      </div>
+    </div>
+
+    <!-- game overlay: a fixed, non-scrolling plate for the minigames -->
+    <div class="playov" id="playov" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="playov-title">
+      <div class="playov__inner">
+        <div class="playov__head">
+          <span id="playov-kicker"></span>
+          <button class="overlay__close" id="playov-close" aria-label="Close game" data-magnetic="0.3">Close</button>
+        </div>
+        <div class="playov__title-row">
+          <h2 class="playov__title" id="playov-title"></h2>
+          <p class="playov__howto" id="playov-howto"></p>
+        </div>
+        <div class="playov__plate">
+          <canvas id="playov-canvas" aria-label="Game canvas"></canvas>
+        </div>
+        <div class="playov__foot">
+          <span class="playov__score"><i id="playov-score">0</i><em id="playov-best"></em></span>
+          <span class="playov__hint" id="playov-hint">Space or tap to play · Esc closes</span>
+          <button class="playov__again" id="playov-again" data-magnetic="0.3">Again</button>
+        </div>
       </div>
     </div>
 

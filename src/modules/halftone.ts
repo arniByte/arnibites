@@ -82,8 +82,9 @@ void main(){
 
 // render 1:1 with device pixels (capped) — crisp dots, no chunky upscale
 const DPR = Math.min(window.devicePixelRatio || 1, 2);
-/** dot-cell size in CSS pixels */
-const CELL = 9;
+/** dot-cell size in CSS pixels — finer on small viewports so the field
+    recedes to paper texture instead of competing with the wordmark */
+const CELL = window.innerWidth < 700 ? 6.5 : 9;
 
 export function initHalftone(canvas: HTMLCanvasElement): void {
   const gl = canvas.getContext('webgl', { antialias: false, depth: false, alpha: false });
