@@ -187,6 +187,38 @@ body.menu-open .nav {
   color: var(--ink);
 }
 
+.footer__nav {
+  display: flex;
+  gap: 24px;
+}
+
+.footer__nav a {
+  position: relative;
+  color: var(--ash-d);
+  transition: color 0.3s;
+}
+
+.footer__nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: var(--lime-deep);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.footer__nav a:hover {
+  color: var(--ink);
+}
+
+.footer__nav a:hover::after {
+  transform: scaleX(1);
+}
+
 .footer__top {
   margin-left: auto;
   font-style: italic;

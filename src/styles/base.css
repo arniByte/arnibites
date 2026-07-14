@@ -223,6 +223,21 @@ body.cursor-down .cursor {
   100% { transform: translate(0, 0); }
 }
 
+/* --- scroll progress (lime = state; driven by scroll.ts) ------------- */
+
+.progress-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 101;
+  pointer-events: none;
+  background: var(--lime);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
 /* --- scroll reveals (IntersectionObserver adds .is-in) --------------- */
 
 html.js [data-reveal] {

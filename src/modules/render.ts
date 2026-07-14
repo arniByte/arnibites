@@ -29,7 +29,7 @@ export function renderDirections(): void {
         <h3 class="dir__group-name"><em>${d.label}</em></h3>
         <p class="dir__group-note">${d.caption}</p>
       </div>
-      ${d.layout === 'gallery' ? renderGallery(d.items) : renderList(d.key, d.items)}
+      ${d.layout === 'gallery' ? renderGallery(d.items) : d.layout === 'play' ? renderPlay(d.items) : renderList(d.key, d.items)}
     </section>`,
     )
     .join('');
@@ -56,7 +56,26 @@ function renderGallery(items: typeof directions[number]['items']): string {
       .map(
         (it, i) => `
       <button class="art-tile" data-seed="${it.seed}" data-cursor="View" data-reveal style="--reveal-delay: ${(i * 0.07).toFixed(2)}s" aria-haspopup="dialog" aria-label="${it.title}, ${it.meta}">
-        <span class="art-tile__frame"><img src="${it.image}" alt="${it.title}" loading="lazy" /></span>
+        <span class="art-tile__frame"${it.ratio ? ` style="aspect-ratio: ${it.ratio}"` : ''}><img src="${it.image}" alt="${it.title}" loading="lazy" decoding="async" /></span>
+        <span class="art-tile__cap">
+          <span class="art-tile__title">${it.title}</span>
+          <span class="art-tile__meta">${it.meta}</span>
+        </span>
+      </button>`,
+      )
+      .join('')}
+  </div>`;
+}
+
+function renderPlay(items: typeof directions[number]['items']): string {
+  return `<div class="dir__gallery dir__gallery--play">
+    ${items
+      .map(
+        (it, i) => `
+      <button class="art-tile play-tile" data-game="${it.game}" data-seed="${it.seed}" data-cursor="Play" data-reveal style="--reveal-delay: ${(i * 0.07).toFixed(2)}s" aria-haspopup="dialog" aria-label="Play ${it.title} — ${it.note}">
+        <span class="art-tile__frame play-tile__frame">
+          <canvas class="play-tile__canvas" width="440" height="440" aria-hidden="true"></canvas>
+        </span>
         <span class="art-tile__cap">
           <span class="art-tile__title">${it.title}</span>
           <span class="art-tile__meta">${it.meta}</span>

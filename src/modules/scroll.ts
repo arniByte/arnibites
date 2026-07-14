@@ -11,6 +11,67 @@ export function initScrollAccents(): void {
   initSectionMarkers();
   initMeCurtain();
   initGalleryParallax();
+  initProgressLine();
+  initFactsSettle();
+}
+
+/** a 2px lime line along the top edge showing page progress */
+function initProgressLine(): void {
+  const line = document.createElement('div');
+  line.className = 'progress-line';
+  line.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(line);
+
+  let last = -1;
+  gsap.ticker.add(() => {
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    const p = max > 0 ? clamp(window.scrollY / max, 0, 1) : 0;
+    if (Math.abs(p - last) < 0.001) return;
+    last = p;
+    line.style.transform = `scaleX(${p.toFixed(4)})`;
+  });
+}
+
+/** ME facts settle: values scramble into place the first time they're seen */
+function initFactsSettle(): void {
+  if (REDUCED_MOTION || !('IntersectionObserver' in window)) return;
+  const facts = document.querySelector<HTMLElement>('.facts');
+  if (!facts) return;
+
+  const GLYPHS = 'abcdefghijklmnopqrstuvwxyz0123456789·—';
+  const settle = (el: HTMLElement, delay: number): void => {
+    const original = el.textContent ?? '';
+    if (!original.trim()) return;
+    const start = performance.now() + delay;
+    const dur = 620;
+    const tick = (now: number): void => {
+      const t = clamp((now - start) / dur, 0, 1);
+      if (t <= 0) {
+        requestAnimationFrame(tick);
+        return;
+      }
+      const lock = Math.floor(t * original.length);
+      let out = '';
+      for (let i = 0; i < original.length; i++) {
+        out += i < lock || original[i] === ' ' ? original[i] : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+      }
+      el.textContent = out;
+      if (t < 1) requestAnimationFrame(tick);
+      else el.textContent = original;
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const io = new IntersectionObserver(
+    ([entry], obs) => {
+      if (!entry.isIntersecting) return;
+      obs.disconnect();
+      facts.querySelectorAll<HTMLElement>('dd').forEach((dd, i) => settle(dd, i * 140));
+    },
+    { threshold: 0.4 },
+  );
+  io.observe(facts);
 }
 
 /** the gallery breathes: each tile drifts at its own pace while scrolling */

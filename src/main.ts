@@ -11,12 +11,14 @@ import './styles/components.css';
 
 import { me } from './content';
 import { drawPortraitHalftone } from './modules/artgen';
-import { initBackToTop, initMenu } from './modules/chrome';
+import { initBackToTop, initFooterPlay, initMenu } from './modules/chrome';
 import { initCursor } from './modules/cursor';
 import { initDirections } from './modules/directions';
 import { initHalftone } from './modules/halftone';
 import { initMagnetic } from './modules/magnetic';
 import { initLenis, initMarquee, prepareHeroIntro } from './modules/motion';
+import { initPlayLaunch } from './modules/play/launcher';
+import { initPlayThumbs } from './modules/play/thumbs';
 import { runPreloader } from './modules/preloader';
 import { renderDirections, renderMe, renderSocials } from './modules/render';
 import { initReveals } from './modules/reveal';
@@ -45,7 +47,10 @@ const lenis = initLenis();
 initCursor();
 initMenu(lenis);
 initBackToTop(lenis);
+initFooterPlay();
 initDirections(lenis);
+initPlayThumbs();
+initPlayLaunch(lenis);
 initMagnetic();
 
 const halftone = document.getElementById('halftone') as HTMLCanvasElement | null;
