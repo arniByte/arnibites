@@ -106,6 +106,32 @@
   pointer-events: none;
 }
 
+/* a quiet paper shelf along the top edge so the nav never fights the
+   dot field (the halftone fades in below the wordmark's headroom) */
+.hero::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: calc(var(--nav-h) + 46px);
+  z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    var(--paper) 0%,
+    rgba(244, 242, 237, 0.82) 48%,
+    rgba(244, 242, 237, 0) 100%
+  );
+  pointer-events: none;
+}
+
+@media (max-width: 700px) {
+  /* the field recedes further on phones — paper texture, not noise */
+  .hero__halftone {
+    opacity: 0.72;
+  }
+}
+
 /* one-time lime scanline sweep on first paint — visible without a cursor */
 .hero__scan {
   position: absolute;

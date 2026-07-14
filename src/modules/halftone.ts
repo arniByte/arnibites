@@ -80,8 +80,10 @@ void main(){
 }
 `;
 
-// render 1:1 with device pixels (capped) — crisp dots, no chunky upscale
-const DPR = Math.min(window.devicePixelRatio || 1, 2);
+// render 1:1 with device pixels — crisp dots, no chunky upscale. Phones
+// commonly sit at DPR 3 and the canvas is small there, so allow it; large
+// desktop canvases stay capped at 2.
+const DPR = Math.min(window.devicePixelRatio || 1, window.innerWidth < 700 ? 3 : 2);
 /** dot-cell size in CSS pixels — finer on small viewports so the field
     recedes to paper texture instead of competing with the wordmark */
 const CELL = window.innerWidth < 700 ? 6.5 : 9;
